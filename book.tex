@@ -67,8 +67,8 @@
 \definecolor{LightGray}{RGB}{245, 245, 245}
 \definecolor{MidGray}{RGB}{130, 130, 130}
 \definecolor{DarkGray}{RGB}{50, 50, 50}
-\definecolor{CodeBg}{RGB}{248, 248, 252}
-\definecolor{CodeBorder}{RGB}{180, 190, 220}
+\definecolor{CodeBg}{RGB}{252, 253, 255}
+\definecolor{CodeBorder}{RGB}{198, 208, 230}
 \definecolor{TipBg}{RGB}{230, 245, 230}
 \definecolor{TipBorder}{RGB}{0, 150, 60}
 \definecolor{WarnBg}{RGB}{255, 245, 220}
@@ -112,19 +112,27 @@
 \lstdefinestyle{pythonstyle}{
   language=Python,
   backgroundcolor=\color{CodeBg},
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\footnotesize,
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
-  numberstyle=\tiny\color{MidGray},
+  numberstyle=\scriptsize\color{MidGray},
   numbers=left,
-  numbersep=8pt,
+  numbersep=10pt,
   stepnumber=1,
   breaklines=true,
   breakatwhitespace=true,
   showstringspaces=false,
   frame=single,
-  framesep=4pt,
+  framerule=0.6pt,
+  framesep=6pt,
+  xleftmargin=0.6em,
+  xrightmargin=0.3em,
+  framexleftmargin=0.6em,
+  aboveskip=0.8em,
+  belowskip=0.8em,
+  columns=fullflexible,
+  keepspaces=true,
   rulecolor=\color{CodeBorder},
   tabsize=4,
   captionpos=b,
@@ -134,14 +142,26 @@
 
 \lstdefinestyle{bashstyle}{
   language=bash,
-  backgroundcolor=\color{LightGray},
-  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{CodeBg},
+  basicstyle=\ttfamily\footnotesize,
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
+  numbers=left,
+  numberstyle=\scriptsize\color{MidGray},
+  numbersep=10pt,
   breaklines=true,
+  breakatwhitespace=true,
   frame=single,
-  framesep=4pt,
+  framerule=0.6pt,
+  framesep=6pt,
+  xleftmargin=0.6em,
+  xrightmargin=0.3em,
+  framexleftmargin=0.6em,
+  aboveskip=0.8em,
+  belowskip=0.8em,
+  columns=fullflexible,
+  keepspaces=true,
   rulecolor=\color{CodeBorder},
   showstringspaces=false,
   tabsize=2,
@@ -150,16 +170,25 @@
 \lstdefinestyle{cstyle}{
   language=C,
   backgroundcolor=\color{CodeBg},
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\footnotesize,
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
   numbers=left,
-  numberstyle=\tiny\color{MidGray},
-  numbersep=8pt,
+  numberstyle=\scriptsize\color{MidGray},
+  numbersep=10pt,
   breaklines=true,
+  breakatwhitespace=true,
   frame=single,
-  framesep=4pt,
+  framerule=0.6pt,
+  framesep=6pt,
+  xleftmargin=0.6em,
+  xrightmargin=0.3em,
+  framexleftmargin=0.6em,
+  aboveskip=0.8em,
+  belowskip=0.8em,
+  columns=fullflexible,
+  keepspaces=true,
   rulecolor=\color{CodeBorder},
   showstringspaces=false,
   tabsize=4,
@@ -167,14 +196,26 @@
 
 \lstdefinestyle{yamlstyle}{
   language=,
-  backgroundcolor=\color{LightGray},
-  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{CodeBg},
+  basicstyle=\ttfamily\footnotesize,
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
+  numbers=left,
+  numberstyle=\scriptsize\color{MidGray},
+  numbersep=10pt,
   breaklines=true,
+  breakatwhitespace=true,
   frame=single,
-  framesep=4pt,
+  framerule=0.6pt,
+  framesep=6pt,
+  xleftmargin=0.6em,
+  xrightmargin=0.3em,
+  framexleftmargin=0.6em,
+  aboveskip=0.8em,
+  belowskip=0.8em,
+  columns=fullflexible,
+  keepspaces=true,
   rulecolor=\color{CodeBorder},
   showstringspaces=false,
 }
@@ -2483,35 +2524,37 @@ latency.
 
 \section*{Essential CUDA API}
 
-\begin{lstlisting}[style=cstyle, caption={CUDA Cheat Sheet}]
-/* ── Memory ─────────────────────────────────────────────── */
+\noindent\textbf{CUDA Cheat Sheet (Quick Reference)}
+
+\begin{verbatim}
+/* -- Memory ---------------------------------------------- */
 cudaMalloc(&ptr, bytes);             // Allocate GPU memory
 cudaFree(ptr);                       // Free GPU memory
 cudaMemcpy(dst, src, bytes, kind);   // Transfer: kind =
   // cudaMemcpyHostToDevice | cudaMemcpyDeviceToHost | DeviceToDevice
 cudaMemset(ptr, value, bytes);       // Fill GPU memory
 
-/* ── Async memory (for overlap with compute) ───────────── */
+/* -- Async memory (for overlap with compute) ------------ */
 cudaMallocAsync(&ptr, bytes, stream);
 cudaFreeAsync(ptr, stream);
 cudaMemcpyAsync(dst, src, bytes, kind, stream);
 
-/* ── Kernel launch ─────────────────────────────────────── */
+/* -- Kernel launch -------------------------------------- */
 kernel<<<grid, block, shared_mem, stream>>>(args...);
 // grid  = dim3(gridX, gridY, gridZ)
 // block = dim3(blockX, blockY, blockZ)
 // max threads per block: 1024
 
-/* ── Thread indexing inside kernel ────────────────────── */
+/* -- Thread indexing inside kernel ---------------------- */
 int idx = blockIdx.x * blockDim.x + threadIdx.x;
 int idy = blockIdx.y * blockDim.y + threadIdx.y;
 
-/* ── Synchronization ───────────────────────────────────── */
+/* -- Synchronization ------------------------------------ */
 cudaDeviceSynchronize();             // Wait for ALL GPU work
 cudaStreamSynchronize(stream);       // Wait for one stream
 __syncthreads();                     // Sync threads within block (in kernel)
 
-/* ── Error checking (always do this!) ─────────────────── */
+/* -- Error checking (always do this!) ------------------- */
 #define CUDA_CHECK(call) { \
     cudaError_t err = call; \
     if (err != cudaSuccess) { \
@@ -2522,17 +2565,17 @@ __syncthreads();                     // Sync threads within block (in kernel)
 }
 CUDA_CHECK(cudaMalloc(&ptr, bytes));
 
-/* ── Streams ─────────────────────────────────────────── */
+/* -- Streams -------------------------------------------- */
 cudaStream_t stream;
 cudaStreamCreate(&stream);
 cudaStreamDestroy(stream);
 
-/* ── Device query ─────────────────────────────────────── */
+/* -- Device query --------------------------------------- */
 cudaDeviceProp prop;
 cudaGetDeviceProperties(&prop, device_id);
 // prop.name, prop.totalGlobalMem, prop.multiProcessorCount
 // prop.maxThreadsPerBlock, prop.sharedMemPerBlock
-\end{lstlisting}
+\end{verbatim}
 
 \section*{Performance Rules of Thumb}
 
@@ -2722,12 +2765,14 @@ if __name__ == "__main__":
 
 \section*{Profiling Workflow}
 
-\begin{lstlisting}[style=bashstyle, caption={Full GPU profiling workflow}]
-# ── Step 1: Quick health check ───────────────────────────────
+\noindent\textbf{Full GPU Profiling Workflow}
+
+\begin{verbatim}
+# -- Step 1: Quick health check ------------------------------
 nvidia-smi
 # Look for: GPU util%, memory used, temperature, power draw
 
-# ── Step 2: Find the bottleneck with nsys ────────────────────
+# -- Step 2: Find the bottleneck with nsys -------------------
 nsys profile \
     --trace=cuda,nvtx,osrt,cudnn,cublas \
     --sample=cpu \
@@ -2741,7 +2786,7 @@ nsys-ui my_profile.nsys-rep
 # - Is cudaMemcpy dominating? (unnecessary H2D/D2H transfers)
 # - Are kernels short? (need to increase batch size)
 
-# ── Step 3: Deep kernel analysis with ncu ────────────────────
+# -- Step 3: Deep kernel analysis with ncu -------------------
 # WARNING: ncu is slow. Use on small workloads only.
 ncu --set full \
     --kernel-name "cutlass" \    # Target specific kernel
@@ -2757,18 +2802,18 @@ ncu-ui kernel_analysis.ncu-rep
 # - L2 Hit Rate: are we reusing data?
 # - Warp Stall Reasons: what's blocking warps?
 
-# ── Step 4: MFU (Model FLOP Utilization) ────────────────────
+# -- Step 4: MFU (Model FLOP Utilization) --------------------
 # MFU = actual FLOP/s / peak FLOP/s
 # H100 peak FP16: 989 TFLOP/s
 # Good MFU for inference: >30% (memory-bound, expected to be low)
 # Good MFU for large batches: >50%
 
-# ── Step 5: Memory analysis ──────────────────────────────────
+# -- Step 5: Memory analysis ---------------------------------
 # Check for memory fragmentation
 curl http://localhost:8000/metrics | grep cache
 # vllm:gpu_cache_usage_perc  -> should be <90%
 # vllm:gpu_cache_hit_rate    -> higher is better (prefix caching)
-\end{lstlisting}
+\end{verbatim}
 
 \section*{Interpreting Common Profiling Issues}
 
