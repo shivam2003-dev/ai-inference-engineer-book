@@ -322,8 +322,8 @@
 % ─── Half-title ─────────────────────────────────────────────
 \thispagestyle{empty}
 \begin{tikzpicture}[remember picture, overlay]
-  \fill[LightGray] (current page.south west) rectangle (current page.north east);
-  \fill[NavyBlue!14] (current page.north west) rectangle ([yshift=-2.8cm]current page.north east);
+  \fill[{rgb,255:red,246;green,238;blue,255}] (current page.south west) rectangle (current page.north east);
+  \fill[{rgb,255:red,224;green,206;blue,245}] (current page.north west) rectangle ([yshift=-2.8cm]current page.north east);
 \end{tikzpicture}
 \vspace*{4cm}
 \begin{center}
