@@ -7,13 +7,13 @@
 
 \documentclass[12pt, twoside, openright]{book}
 
-%% ── Core encoding & fonts ──────────────────────────────────
+%% -- Core encoding & fonts ----------------------------------
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{lmodern}
+\usepackage{mathpazo}   % Palatino text + math fonts (widely available)
 \usepackage{microtype}
 
-%% ── Page geometry ──────────────────────────────────────────
+%% -- Page geometry ------------------------------------------
 \usepackage[
   paperwidth=7.5in, paperheight=9.25in,
   top=1.0in, bottom=1.1in,
@@ -21,7 +21,7 @@
   headheight=15pt
 ]{geometry}
 
-%% ── Colour palette ─────────────────────────────────────────
+%% -- Colour palette -----------------------------------------
 \usepackage[dvipsnames, svgnames, table]{xcolor}
 
 \definecolor{chaptercolor}{RGB}{15, 82, 148}     % deep blue
@@ -45,10 +45,10 @@
 \definecolor{tablerowodd}{RGB}{245, 249, 255}
 \definecolor{tableroweven}{RGB}{255, 255, 255}
 
-%% ── Mathematics ────────────────────────────────────────────
+%% -- Mathematics --------------------------------------------
 \usepackage{amsmath, amssymb, amsthm}
 
-%% ── Graphics & TikZ ────────────────────────────────────────
+%% -- Graphics & TikZ ----------------------------------------
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -60,11 +60,11 @@
   matrix, mindmap, trees, chains
 }
 
-%% ── Tables ─────────────────────────────────────────────────
+%% -- Tables -------------------------------------------------
 \usepackage{longtable, booktabs, array, tabularx, multirow}
 \usepackage{colortbl}
 
-%% ── Code listings ──────────────────────────────────────────
+%% -- Code listings ------------------------------------------
 \usepackage{listings}
 
 \lstdefinestyle{pythonstyle}{
@@ -136,7 +136,7 @@
 
 \lstset{style=pythonstyle}
 
-%% ── Fancy boxes (tcolorbox) ────────────────────────────────
+%% -- Fancy boxes (tcolorbox) --------------------------------
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{listings, breakable, skins}
 
@@ -189,7 +189,7 @@
   coltitle=white,
   attach boxed title to top left={yshift=-2mm, xshift=6pt},
   boxed title style={colback=chaptercolor, arc=2pt},
-  title=\faLightbulb~#1,
+  title=$\star$~#1,
   left=6pt, right=6pt, top=8pt, bottom=4pt,
   arc=3pt,
 }
@@ -207,16 +207,16 @@
   arc=3pt,
 }
 
-%% ── Header / Footer ────────────────────────────────────────
+%% -- Header / Footer ----------------------------------------
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE]{\small\color{gray}\textit{Chapter 1 · Introduction to AI Inference Engineering}}
+\fancyhead[LE]{\small\color{gray}\textit{Chapter 1 $\cdot$ Introduction to AI Inference Engineering}}
 \fancyhead[RO]{\small\color{gray}\textit{AI Inference Engineering}}
 \fancyfoot[C]{\small\color{gray}\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
-%% ── Chapter/Section Titles ─────────────────────────────────
+%% -- Chapter/Section Titles ---------------------------------
 \usepackage{titlesec}
 
 \titleformat{\chapter}[display]
@@ -225,8 +225,8 @@
     \MakeUppercase{\chaptertitlename}\ \thechapter}
   {16pt}
   {\Huge\bfseries}
-  [\vspace{4pt}\color{chaptercolor}\titlerule[2pt]\vspace{2pt}
-   \color{chaptercolor!40}\titlerule[0.5pt]]
+  [\vspace{4pt}\color{chaptercolor}\rule{\textwidth}{2pt}\vspace{2pt}
+   \color{chaptercolor!40}\rule{\textwidth}{0.5pt}]
 
 \titleformat{\section}
   {\normalfont\Large\bfseries\color{chaptercolor}}
@@ -240,12 +240,12 @@
   {\normalfont\normalsize\bfseries\color{accentorange}}
   {\thesubsubsection}{1em}{}
 
-%% ── Lists ──────────────────────────────────────────────────
+%% -- Lists --------------------------------------------------
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=*, itemsep=3pt, topsep=4pt}
 \setlist[enumerate]{leftmargin=*, itemsep=3pt, topsep=4pt}
 
-%% ── Hyperref (load last) ───────────────────────────────────
+%% -- Hyperref (load last) -----------------------------------
 \usepackage{hyperref}
 \hypersetup{
   colorlinks=true,
@@ -259,7 +259,7 @@
   bookmarksopen=true,
 }
 
-%% ── Utility macros ─────────────────────────────────────────
+%% -- Utility macros -----------------------------------------
 \newcommand{\term}[1]{\textbf{\color{chaptercolor}#1}}
 \newcommand{\code}[1]{\texttt{\small\color{keywordcolor}#1}}
 \newcommand{\metric}[1]{\textbf{\color{accentorange}#1}}
@@ -274,7 +274,7 @@
   \vspace{8pt}
 }
 
-%% ── Learning-objectives environment ────────────────────────
+%% -- Learning-objectives environment ------------------------
 \newenvironment{learningobjectives}{%
   \begin{tcolorbox}[
     enhanced, breakable,
@@ -292,7 +292,7 @@
   \end{tcolorbox}
 }
 
-%% ── Exercise environment ───────────────────────────────────
+%% -- Exercise environment -----------------------------------
 \newcounter{exercise}[chapter]
 \newenvironment{exercise}[1][]{%
   \refstepcounter{exercise}
@@ -307,7 +307,7 @@
   \end{tcolorbox}
 }
 
-%% ── Further Reading environment ────────────────────────────
+%% -- Further Reading environment ----------------------------
 \newenvironment{furtherreading}{%
   \begin{tcolorbox}[
     enhanced, breakable,
@@ -320,7 +320,7 @@
   \end{tcolorbox}
 }
 
-%% ── Summary box ────────────────────────────────────────────
+%% -- Summary box --------------------------------------------
 \newenvironment{chapsummary}{%
   \begin{tcolorbox}[
     enhanced, breakable,
@@ -333,21 +333,21 @@
   \end{tcolorbox}
 }
 
-%% ═══════════════════════════════════════════════════════════
+%% -----------------------------------------------------------
 %%  DOCUMENT START
-%% ═══════════════════════════════════════════════════════════
+%% -----------------------------------------------------------
 \begin{document}
 
 \frontmatter
 
-%% ── Cover Page ─────────────────────────────────────────────
+%% -- Cover Page ---------------------------------------------
 \begin{titlepage}
 \pagecolor{chaptercolor}
 \color{white}
 \centering
 \vspace*{3cm}
 
-{\fontsize{13}{16}\selectfont\MakeUppercase{\textls[150]{AI Inference Engineering}}}
+{\fontsize{13}{16}\selectfont\MakeUppercase{AI Inference Engineering}}
 
 \vspace{0.6cm}
 \color{white!70}\rule{0.6\textwidth}{0.5pt}\color{white}
@@ -388,7 +388,7 @@ Introduction to\\[6pt] AI Inference Engineering}
 
 \vspace{2.5cm}
 \color{white!60}
-{\small\itshape First Edition · 2025}
+{\small\itshape First Edition $\cdot$ 2025}
 
 \end{titlepage}
 \nopagecolor
@@ -397,9 +397,9 @@ Introduction to\\[6pt] AI Inference Engineering}
 \mainmatter
 \setcounter{chapter}{0}
 
-%% ═══════════════════════════════════════════════════════════
+%% -----------------------------------------------------------
 \chapter{Introduction to AI Inference Engineering}
-%% ═══════════════════════════════════════════════════════════
+%% -----------------------------------------------------------
 
 \chapquote{%
   Any sufficiently advanced technology is indistinguishable from magic.
@@ -427,9 +427,9 @@ Introduction to\\[6pt] AI Inference Engineering}
         this book.
 \end{learningobjectives}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Why This Book Exists}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Every time you send a message to ChatGPT, ask Gemini to summarise a
 document, or watch Midjourney paint an image from your words, something
@@ -460,9 +460,9 @@ You do \textbf{not} need a PhD. You do need curiosity and a willingness
 to think carefully about systems.
 \end{notebox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{What Is Inference? A First-Principles Explanation}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \subsection{Start with the Simplest Idea}
 
@@ -561,9 +561,9 @@ at high speed, for millions of users simultaneously,
 is the fundamental engineering challenge of AI inference.
 \end{insightbox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Training vs.\ Inference: Understanding the Difference}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 This is one of the most important distinctions in AI engineering.
 Training and inference look superficially similar --- both run the
@@ -631,7 +631,7 @@ That's it. No backpropagation. No gradient storage. No parameter updates.
 \draw[trainarrow] (tloss) -- (tback);
 \draw[trainarrow] (tback) -- (tupdate);
 \draw[trainarrow] (tupdate.east) to[out=0, in=0, looseness=2.5]
-                  node[right, font=\tiny\color{orange!80}]{repeat\\billions\\of times}
+                  node[right, font=\tiny\color{orange!80}]{repeat / billions of times}
                   (tdata.east);
 
 \node[above=0.2cm of tdata, font=\bfseries\color{orange!80}] {TRAINING};
@@ -722,9 +722,9 @@ Training is a one-time (or infrequent) cost.
 This is why inference engineering has become a separate discipline.
 \end{notebox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Why Inference Engineering Matters}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 You might wonder: ``If inference is just running the model,
 how complex can it really be?''
@@ -789,9 +789,9 @@ objectives:
     {You can only fully\\optimise \textbf{two} of these\\at once};
 
   % Small icons
-  \node[font=\Large] at (0.2, 0.5) {⚡};
-  \node[font=\Large] at (5.8, 0.5) {🚀};
-  \node[font=\Large] at (3, 4.6)   {💰};
+  \node[font=\Large] at (0.2, 0.5) {\textbf{L}};
+  \node[font=\Large] at (5.8, 0.5) {\textbf{T}};
+  \node[font=\Large] at (3, 4.6)   {\textbf{C}};
 
   % Edge annotations
   \node[font=\small\color{gray}, rotate=41, above] at (1.5, 2.6)
@@ -873,9 +873,9 @@ A system generating 50 tokens per second but with a 3-second TTFT
 will feel slow, even if the total generation time is short.
 \end{notebox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{The Anatomy of an Inference System}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Before we go deeper, let us trace exactly what happens when you send
 a message to a production AI system.
@@ -1037,9 +1037,9 @@ still the limiting factor. This is called being
 in Chapter 3.
 \end{insightbox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{The Hardware Landscape}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 AI inference runs on specialised hardware. Understanding this hardware
 --- at least conceptually --- is essential for understanding why
@@ -1183,9 +1183,9 @@ Every optimisation technique we study --- KV caching, quantisation,
 weight sharing --- can be understood as trying to keep the right data
 at the right level of this memory hierarchy.
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{The Evolution of AI Inference Infrastructure}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 To understand where we are today and where we are going, we need to
 understand where we came from.
@@ -1327,9 +1327,9 @@ y-axis --- each step represents a $10\times$ increase in parameters.}
 \label{fig:evolution}
 \end{figure}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Modern Inference Systems: A Tour}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Let us briefly survey the major inference engines and systems
 that power today's AI products.
@@ -1397,9 +1397,9 @@ At the cloud provider level:
         high token generation speeds ($>$ 500 tokens/second)
 \end{itemize}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Real-World Applications and Use Cases}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Let us ground these concepts by looking at how real systems use
 AI inference.
@@ -1434,9 +1434,9 @@ per day} at sub-100ms latency.
 Retrieval-Augmented Generation (RAG) pipelines combine AI inference
 with database retrieval:
 \begin{enumerate}
-  \item User query → embedding model inference (fast, $<$10ms)
-  \item Embedding → vector database search
-  \item Retrieved documents + query → LLM inference (slower, 1--10s)
+  \item User query \textrightarrow{} embedding model inference (fast, $<$10ms)
+  \item Embedding \textrightarrow{} vector database search
+  \item Retrieved documents + query \textrightarrow{} LLM inference (slower, 1--10s)
 \end{enumerate}
 
 This requires \textit{two} types of inference: embedding models
@@ -1463,9 +1463,9 @@ The frontier of inference engineering:
   \item These require on-device inference (edge deployment)
 \end{itemize}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Your First Inference System: A Practical Example}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Let us make these concepts concrete with a simple but complete
 Python example.
@@ -1491,7 +1491,7 @@ import time
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# ── Step 1: Load the model and tokeniser ──────────────────────────────
+# -- Step 1: Load the model and tokeniser ------------------------------
 # The tokeniser converts text to token IDs (numbers the model understands)
 # The model contains all the trained parameters (weights)
 #
@@ -1513,7 +1513,7 @@ print(f"Model loaded. Parameters: {sum(p.numel() for p in model.parameters()):,}
 print(f"Device: {next(model.parameters()).device}")
 print()
 
-# ── Step 2: Define our inference function ────────────────────────────
+# -- Step 2: Define our inference function ----------------------------
 def run_inference(prompt: str, max_new_tokens: int = 100) -> dict:
     """
     Runs a single inference request and returns the result with metrics.
@@ -1528,7 +1528,7 @@ def run_inference(prompt: str, max_new_tokens: int = 100) -> dict:
     """
 
     # Step 2a: Tokenise the input
-    # Convert raw text → token IDs → tensor on GPU
+    # Convert raw text \textrightarrow{} token IDs \textrightarrow{} tensor on GPU
     inputs = tokeniser(prompt, return_tensors="pt").to(model.device)
     input_len = inputs["input_ids"].shape[1]  # number of input tokens
 
@@ -1566,7 +1566,7 @@ def run_inference(prompt: str, max_new_tokens: int = 100) -> dict:
     }
 
 
-# ── Step 3: Run some example requests ────────────────────────────────
+# -- Step 3: Run some example requests --------------------------------
 prompts = [
     "Explain what artificial intelligence is in simple terms:",
     "The key difference between training and inference in machine learning is:",
@@ -1589,7 +1589,7 @@ for i, prompt in enumerate(prompts, 1):
     print(f"  {result['output_text'][:200]}")
     print()
 
-# ── Step 4: Batch inference comparison ───────────────────────────────
+# -- Step 4: Batch inference comparison -------------------------------
 print(f"{'='*60}")
 print("Comparing single vs batch inference:")
 print()
@@ -1640,9 +1640,9 @@ On a larger model (e.g. LLaMA-3-70B), you would see:
 These numbers motivate everything we will optimise in this book.
 \end{notebox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Performance Measurement: The Metrics That Matter}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Before we end this chapter, we need to establish a shared vocabulary
 for measuring inference system performance.
@@ -1751,9 +1751,9 @@ why in Chapter 4.}
 \label{fig:throughput-vs-concurrency}
 \end{figure}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Production Engineering Notes}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 Before we close this chapter, here are some production realities
 that you will encounter as an inference engineer.
@@ -1801,9 +1801,9 @@ careful blue-green deployment or canary rollouts.
 With large models (hundreds of GB), the update itself takes minutes ---
 during which the new model must be loaded without dropping service.
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Common Mistakes in Inference Engineering}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \begin{warningbox}[Mistake 1: Confusing Training Metrics with Inference Metrics]
 A model with excellent training loss does not necessarily produce
@@ -1833,9 +1833,9 @@ minutes. Always provision for 2--3$\times$ expected peak, and have
 clear shedding/queueing strategies for higher load.
 \end{warningbox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Best Practices}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \begin{tipbox}[Best Practice 1: Measure Before Optimising]
 Before optimising anything, measure your current system's bottleneck.
@@ -1867,9 +1867,9 @@ Monitor metrics at every layer:
 Slow P99 latency could be caused by a problem at \textit{any} layer.
 \end{tipbox}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Chapter Summary}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \begin{chapsummary}
 \textbf{Key concepts from Chapter 1:}
@@ -1910,9 +1910,9 @@ understanding exactly \textit{what} the GPU is computing during inference
 and \textit{why} the model is structured the way it is.
 \end{chapsummary}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Exercises}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \begin{exercise}[Measuring Inference Metrics]
 Run the code example from Listing~\ref{lst:basic-inference} with GPT-2.
@@ -1967,9 +1967,9 @@ from Figure~\ref{fig:request-lifecycle} from memory. Then:
 \end{enumerate}
 \end{exercise}
 
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 \section{Further Reading}
-%% ───────────────────────────────────────────────────────────
+%% -----------------------------------------------------------
 
 \begin{furtherreading}
 \textbf{Foundational Papers}
@@ -2017,7 +2017,7 @@ from Figure~\ref{fig:request-lifecycle} from memory. Then:
 \end{itemize}
 \end{furtherreading}
 
-%% ── Chapter end ornament ───────────────────────────────────
+%% -- Chapter end ornament -----------------------------------
 \vfill
 \begin{center}
 \begin{tikzpicture}
