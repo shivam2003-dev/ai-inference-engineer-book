@@ -79,6 +79,9 @@
 \definecolor{CommentColor}{RGB}{100, 120, 100}
 \definecolor{StringColor}{RGB}{160, 40, 0}
 \definecolor{NumberColor}{RGB}{140, 0, 140}
+\definecolor{FirstPageBg}{RGB}{246, 238, 255}
+\definecolor{FirstPageBand}{RGB}{224, 206, 245}
+\definecolor{TitlePageBand}{RGB}{95, 62, 138}
 
 % ─── Index ───────────────────────────────────────────────────
 \makeindex[columns=2, title=Index, intoc]
@@ -322,8 +325,8 @@
 % ─── Half-title ─────────────────────────────────────────────
 \thispagestyle{empty}
 \begin{tikzpicture}[remember picture, overlay]
-  \fill[{rgb,255:red,246;green,238;blue,255}] (current page.south west) rectangle (current page.north east);
-  \fill[{rgb,255:red,224;green,206;blue,245}] (current page.north west) rectangle ([yshift=-2.8cm]current page.north east);
+  \fill[FirstPageBg] (current page.south west) rectangle (current page.north east);
+  \fill[FirstPageBand] (current page.north west) rectangle ([yshift=-2.8cm]current page.north east);
 \end{tikzpicture}
 \vspace*{4cm}
 \begin{center}
@@ -337,7 +340,7 @@
 % ─── Title page ─────────────────────────────────────────────
 \thispagestyle{empty}
 \begin{tikzpicture}[remember picture, overlay]
-  \fill[NavyBlue] (current page.north west) rectangle
+  \fill[TitlePageBand] (current page.north west) rectangle
     ([yshift=-5cm]current page.north east);
   \node[anchor=north, text=white, font=\LARGE\bfseries, inner sep=0pt]
     at ([yshift=-1.5cm]current page.north) {AI Inference Engineering};
