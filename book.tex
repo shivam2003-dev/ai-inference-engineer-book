@@ -321,11 +321,16 @@
 
 % ─── Half-title ─────────────────────────────────────────────
 \thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[LightGray] (current page.south west) rectangle (current page.north east);
+  \fill[NavyBlue!14] (current page.north west) rectangle ([yshift=-2.8cm]current page.north east);
+\end{tikzpicture}
 \vspace*{4cm}
 \begin{center}
   {\Huge\bfseries\color{NavyBlue} AI Inference Engineering}\\[0.6em]
   {\Large\color{AccentOrange} Building Fast, Scalable, and\\[0.2em]
-   Production-Ready AI Systems}
+   Production-Ready AI Systems}\\[1.2em]
+  {\large\color{DarkGray} Author: Shivam Kumar}
 \end{center}
 \clearpage
 
