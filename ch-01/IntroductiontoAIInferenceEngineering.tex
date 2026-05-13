@@ -1,1 +1,2036 @@
-hi
+%% ============================================================
+%%  AI Inference Engineering: Building Fast, Scalable, and
+%%  Production-Ready AI Systems
+%%  Chapter 1: Introduction to AI Inference Engineering
+%%  Author: AI Inference Engineering Book Series
+%% ============================================================
+
+\documentclass[12pt, twoside, openright]{book}
+
+%% ── Core encoding & fonts ──────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+%% ── Page geometry ──────────────────────────────────────────
+\usepackage[
+  paperwidth=7.5in, paperheight=9.25in,
+  top=1.0in, bottom=1.1in,
+  inner=1.0in, outer=0.85in,
+  headheight=15pt
+]{geometry}
+
+%% ── Colour palette ─────────────────────────────────────────
+\usepackage[dvipsnames, svgnames, table]{xcolor}
+
+\definecolor{chaptercolor}{RGB}{15, 82, 148}     % deep blue
+\definecolor{accentorange}{RGB}{220, 100, 20}    % warm orange
+\definecolor{accentgreen}{RGB}{40, 140, 80}      % emerald
+\definecolor{lightbluebg}{RGB}{235, 244, 255}    % pale blue
+\definecolor{codebg}{RGB}{248, 248, 252}         % near-white
+\definecolor{coderule}{RGB}{180, 180, 210}       % muted purple-grey
+\definecolor{keywordcolor}{RGB}{0, 100, 180}
+\definecolor{commentcolor}{RGB}{100, 140, 80}
+\definecolor{stringcolor}{RGB}{180, 60, 30}
+\definecolor{noteboxbg}{RGB}{255, 252, 230}
+\definecolor{noteboxrule}{RGB}{210, 180, 30}
+\definecolor{warningbg}{RGB}{255, 240, 240}
+\definecolor{warningrule}{RGB}{210, 60, 60}
+\definecolor{tipbg}{RGB}{235, 255, 235}
+\definecolor{tiprule}{RGB}{40, 160, 80}
+\definecolor{defbg}{RGB}{240, 245, 255}
+\definecolor{defrule}{RGB}{60, 100, 200}
+\definecolor{tableheadbg}{RGB}{15, 82, 148}
+\definecolor{tablerowodd}{RGB}{245, 249, 255}
+\definecolor{tableroweven}{RGB}{255, 255, 255}
+
+%% ── Mathematics ────────────────────────────────────────────
+\usepackage{amsmath, amssymb, amsthm}
+
+%% ── Graphics & TikZ ────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{
+  arrows.meta, shapes.geometric, shapes.misc,
+  positioning, fit, backgrounds, decorations.pathreplacing,
+  decorations.markings, patterns, calc, shadows,
+  matrix, mindmap, trees, chains
+}
+
+%% ── Tables ─────────────────────────────────────────────────
+\usepackage{longtable, booktabs, array, tabularx, multirow}
+\usepackage{colortbl}
+
+%% ── Code listings ──────────────────────────────────────────
+\usepackage{listings}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small\linespread{1.1}\selectfont,
+  keywordstyle=\color{keywordcolor}\bfseries,
+  commentstyle=\color{commentcolor}\itshape,
+  stringstyle=\color{stringcolor},
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  stepnumber=1,
+  numbersep=10pt,
+  frame=single,
+  framerule=0.5pt,
+  rulecolor=\color{coderule},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=18pt,
+  xrightmargin=4pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+
+\lstdefinestyle{bashstyle}{
+  language=bash,
+  backgroundcolor=\color{black!90},
+  basicstyle=\ttfamily\small\color{white},
+  keywordstyle=\color{yellow!80}\bfseries,
+  commentstyle=\color{green!60}\itshape,
+  stringstyle=\color{orange!80},
+  numbers=none,
+  frame=single,
+  framerule=0pt,
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+
+\lstdefinestyle{yamlstyle}{
+  language={},
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{keywordcolor}\bfseries,
+  commentstyle=\color{commentcolor}\itshape,
+  stringstyle=\color{stringcolor},
+  numbers=left,
+  stepnumber=1,
+  numbersep=10pt,
+  frame=single,
+  framerule=0.5pt,
+  rulecolor=\color{coderule},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=18pt,
+  aboveskip=10pt,
+  belowskip=6pt,
+}
+
+\lstset{style=pythonstyle}
+
+%% ── Fancy boxes (tcolorbox) ────────────────────────────────
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings, breakable, skins}
+
+%% Note box
+\newtcolorbox{notebox}[1][Note]{
+  enhanced, breakable,
+  colback=noteboxbg, colframe=noteboxrule,
+  fonttitle=\bfseries\small, title=#1,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  arc=3pt, outer arc=3pt,
+  drop shadow={black!20!white, opacity=0.4},
+}
+
+%% Warning box
+\newtcolorbox{warningbox}[1][Warning]{
+  enhanced, breakable,
+  colback=warningbg, colframe=warningrule,
+  fonttitle=\bfseries\small, title=#1,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  arc=3pt,
+}
+
+%% Tip / Best-practice box
+\newtcolorbox{tipbox}[1][Tip]{
+  enhanced, breakable,
+  colback=tipbg, colframe=tiprule,
+  fonttitle=\bfseries\small, title=#1,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  arc=3pt,
+}
+
+%% Definition box
+\newtcolorbox{defbox}[1][Definition]{
+  enhanced, breakable,
+  colback=defbg, colframe=defrule,
+  fonttitle=\bfseries\small\color{white},
+  coltitle=white,
+  attach boxed title to top left={yshift=-2mm, xshift=6pt},
+  boxed title style={colback=defrule, arc=2pt},
+  title=#1,
+  left=6pt, right=6pt, top=8pt, bottom=4pt,
+  arc=3pt,
+}
+
+%% Analogy / Intuition box
+\newtcolorbox{analogybox}[1][Intuition]{
+  enhanced, breakable,
+  colback=lightbluebg, colframe=chaptercolor,
+  fonttitle=\bfseries\small\color{white},
+  coltitle=white,
+  attach boxed title to top left={yshift=-2mm, xshift=6pt},
+  boxed title style={colback=chaptercolor, arc=2pt},
+  title=\faLightbulb~#1,
+  left=6pt, right=6pt, top=8pt, bottom=4pt,
+  arc=3pt,
+}
+
+%% Key Insight box
+\newtcolorbox{insightbox}[1][Key Insight]{
+  enhanced, breakable,
+  colback=orange!8, colframe=accentorange,
+  fonttitle=\bfseries\small\color{white},
+  coltitle=white,
+  attach boxed title to top left={yshift=-2mm, xshift=6pt},
+  boxed title style={colback=accentorange, arc=2pt},
+  title=#1,
+  left=6pt, right=6pt, top=8pt, bottom=4pt,
+  arc=3pt,
+}
+
+%% ── Header / Footer ────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\color{gray}\textit{Chapter 1 · Introduction to AI Inference Engineering}}
+\fancyhead[RO]{\small\color{gray}\textit{AI Inference Engineering}}
+\fancyfoot[C]{\small\color{gray}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% ── Chapter/Section Titles ─────────────────────────────────
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{chaptercolor}}
+  {\normalfont\large\color{chaptercolor!60}
+    \MakeUppercase{\chaptertitlename}\ \thechapter}
+  {16pt}
+  {\Huge\bfseries}
+  [\vspace{4pt}\color{chaptercolor}\titlerule[2pt]\vspace{2pt}
+   \color{chaptercolor!40}\titlerule[0.5pt]]
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{chaptercolor}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{chaptercolor!80}}
+  {\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{accentorange}}
+  {\thesubsubsection}{1em}{}
+
+%% ── Lists ──────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*, itemsep=3pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=*, itemsep=3pt, topsep=4pt}
+
+%% ── Hyperref (load last) ───────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=chaptercolor,
+  citecolor=accentgreen,
+  urlcolor=accentorange,
+  pdftitle={AI Inference Engineering -- Chapter 1},
+  pdfauthor={AI Inference Engineering Book Series},
+  pdfsubject={AI Inference Engineering},
+  bookmarksnumbered=true,
+  bookmarksopen=true,
+}
+
+%% ── Utility macros ─────────────────────────────────────────
+\newcommand{\term}[1]{\textbf{\color{chaptercolor}#1}}
+\newcommand{\code}[1]{\texttt{\small\color{keywordcolor}#1}}
+\newcommand{\metric}[1]{\textbf{\color{accentorange}#1}}
+\newcommand{\chapquote}[2]{%
+  \begin{center}
+    \begin{minipage}{0.82\textwidth}
+      \itshape\large ``#1''
+      \vspace{4pt}\\
+      \normalsize\normalfont\hfill --- #2
+    \end{minipage}
+  \end{center}
+  \vspace{8pt}
+}
+
+%% ── Learning-objectives environment ────────────────────────
+\newenvironment{learningobjectives}{%
+  \begin{tcolorbox}[
+    enhanced, breakable,
+    colback=chaptercolor!6, colframe=chaptercolor,
+    title={\bfseries\color{white} Learning Objectives},
+    fonttitle=\bfseries,
+    coltitle=white,
+    colbacktitle=chaptercolor,
+    arc=4pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+  ]
+  \begin{enumerate}[label=\textcolor{chaptercolor}{\bfseries\arabic*.}, leftmargin=*]
+}{%
+  \end{enumerate}
+  \end{tcolorbox}
+}
+
+%% ── Exercise environment ───────────────────────────────────
+\newcounter{exercise}[chapter]
+\newenvironment{exercise}[1][]{%
+  \refstepcounter{exercise}
+  \begin{tcolorbox}[
+    enhanced,
+    colback=accentgreen!5, colframe=accentgreen,
+    title={\bfseries\color{white} Exercise \theexercise\ifx&#1&\else: #1\fi},
+    coltitle=white, colbacktitle=accentgreen,
+    arc=3pt, left=6pt, right=6pt, top=6pt, bottom=6pt,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+%% ── Further Reading environment ────────────────────────────
+\newenvironment{furtherreading}{%
+  \begin{tcolorbox}[
+    enhanced, breakable,
+    colback=gray!5, colframe=gray!50,
+    title={\bfseries Further Reading \& References},
+    coltitle=black, colbacktitle=gray!20,
+    arc=3pt, left=6pt, right=6pt,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+%% ── Summary box ────────────────────────────────────────────
+\newenvironment{chapsummary}{%
+  \begin{tcolorbox}[
+    enhanced, breakable,
+    colback=chaptercolor!5, colframe=chaptercolor,
+    title={\bfseries\color{white} Chapter Summary},
+    coltitle=white, colbacktitle=chaptercolor,
+    arc=4pt, left=8pt, right=8pt, top=6pt, bottom=6pt,
+  ]
+}{%
+  \end{tcolorbox}
+}
+
+%% ═══════════════════════════════════════════════════════════
+%%  DOCUMENT START
+%% ═══════════════════════════════════════════════════════════
+\begin{document}
+
+\frontmatter
+
+%% ── Cover Page ─────────────────────────────────────────────
+\begin{titlepage}
+\pagecolor{chaptercolor}
+\color{white}
+\centering
+\vspace*{3cm}
+
+{\fontsize{13}{16}\selectfont\MakeUppercase{\textls[150]{AI Inference Engineering}}}
+
+\vspace{0.6cm}
+\color{white!70}\rule{0.6\textwidth}{0.5pt}\color{white}
+\vspace{0.6cm}
+
+{\fontsize{22}{28}\selectfont\bfseries Building Fast, Scalable, and\\[4pt]
+Production-Ready AI Systems}
+
+\vspace{2.2cm}
+
+{\fontsize{16}{20}\selectfont\color{orange!80}
+\textbf{Chapter 1}}
+
+\vspace{0.4cm}
+
+{\fontsize{24}{30}\selectfont\bfseries
+Introduction to\\[6pt] AI Inference Engineering}
+
+\vspace{3.5cm}
+
+\begin{tikzpicture}[scale=0.9]
+  % GPU chip diagram
+  \foreach \x in {0,1,2,3} {
+    \foreach \y in {0,1,2,3} {
+      \fill[white!20] (\x*1.1, \y*1.1) rectangle (\x*1.1+0.9, \y*1.1+0.9);
+      \fill[orange!60] (\x*1.1+0.15, \y*1.1+0.15)
+                       rectangle (\x*1.1+0.75, \y*1.1+0.75);
+    }
+  }
+  \draw[white, very thick] (-0.15,-0.15) rectangle (4.75,4.75);
+  \node[white, font=\footnotesize\bfseries] at (2.3, -0.55) {GPU Compute Grid};
+  % Arrows indicating data flow
+  \draw[->, white!60, very thick] (5.2, 2.3) -- (4.9, 2.3);
+  \node[white!80, font=\tiny, right] at (5.25, 2.45) {Input};
+  \draw[->, white!60, very thick] (-0.3, 2.3) -- (-0.6, 2.3);
+  \node[white!80, font=\tiny, left] at (-0.65, 2.45) {Output};
+\end{tikzpicture}
+
+\vspace{2.5cm}
+\color{white!60}
+{\small\itshape First Edition · 2025}
+
+\end{titlepage}
+\nopagecolor
+\color{black}
+
+\mainmatter
+\setcounter{chapter}{0}
+
+%% ═══════════════════════════════════════════════════════════
+\chapter{Introduction to AI Inference Engineering}
+%% ═══════════════════════════════════════════════════════════
+
+\chapquote{%
+  Any sufficiently advanced technology is indistinguishable from magic.
+  Our job as engineers is to make that magic fast, cheap, and reliable.%
+}{Arthur C. Clarke (adapted)}
+
+\vspace{0.5cm}
+
+\begin{learningobjectives}
+  \item Understand the precise meaning of \textbf{inference} and how it
+        differs from model training.
+  \item Explain why inference engineering has become one of the most
+        important disciplines in modern AI infrastructure.
+  \item Describe the full lifecycle of a request through a production
+        inference system --- from API call to token response.
+  \item Understand the key performance metrics used to evaluate inference
+        systems: \textbf{latency}, \textbf{throughput}, and
+        \textbf{cost per token}.
+  \item Identify the main hardware components (GPU, CPU, memory, network)
+        and their roles in inference.
+  \item Trace the historical evolution from research models to today's
+        hyper-scale inference platforms.
+  \item Recognise the real-world systems --- ChatGPT, Gemini, Claude,
+        Midjourney --- that rely on the engineering concepts taught in
+        this book.
+\end{learningobjectives}
+
+%% ───────────────────────────────────────────────────────────
+\section{Why This Book Exists}
+%% ───────────────────────────────────────────────────────────
+
+Every time you send a message to ChatGPT, ask Gemini to summarise a
+document, or watch Midjourney paint an image from your words, something
+remarkable is happening behind the scenes.
+
+Thousands of specialised computers --- each containing powerful graphics
+processors, hundreds of gigabytes of memory, and high-speed networking ---
+are working together at millisecond timescales to run an AI model and
+deliver your result.
+
+That entire operation is called \term{AI inference}. The engineering
+discipline that designs, builds, optimises, and scales these systems is
+called \term{AI inference engineering}.
+
+This book will teach you that discipline --- from the ground up.
+
+\begin{notebox}[Who This Book Is For]
+This book is written for:
+\begin{itemize}
+  \item Software engineers who want to move into AI infrastructure
+  \item ML engineers who want to understand what happens after model
+        training
+  \item Platform engineers building internal AI serving systems
+  \item Technical leads making architecture decisions about AI deployments
+  \item Anyone curious about how large AI systems actually work at scale
+\end{itemize}
+You do \textbf{not} need a PhD. You do need curiosity and a willingness
+to think carefully about systems.
+\end{notebox}
+
+%% ───────────────────────────────────────────────────────────
+\section{What Is Inference? A First-Principles Explanation}
+%% ───────────────────────────────────────────────────────────
+
+\subsection{Start with the Simplest Idea}
+
+Let's start with something familiar.
+
+Imagine you study very hard for a maths exam.
+You spend weeks reading textbooks, working through problems,
+and learning formulas.
+That studying phase --- where you absorb knowledge --- is the
+\textit{learning} phase.
+
+Then exam day arrives.
+Someone gives you a new problem you have never seen before.
+You apply everything you have learned to produce an answer.
+That answering phase is \textit{inference}.
+
+\begin{analogybox}[The Exam Analogy]
+\textbf{Training} = studying for months to learn how to solve problems\\[4pt]
+\textbf{Inference} = sitting the exam and solving a new problem using
+what you learned\\[6pt]
+The student does not re-read all their textbooks during the exam.
+They use their \textit{trained knowledge} --- stored in their brain ---
+to answer quickly.\\[4pt]
+AI systems work the same way.
+\end{analogybox}
+
+\subsection{Translating the Analogy to AI}
+
+An AI language model like GPT-4 or Claude is trained on hundreds of
+billions of text documents.
+During training, the model adjusts billions of numerical parameters
+--- think of these as the ``knowledge'' stored in the model ---
+to learn patterns in language.
+
+This training process takes \textit{months}, thousands of GPUs,
+and costs tens of millions of dollars.
+
+Once training is complete, the model's parameters are frozen.
+The model is then \textit{deployed} --- made available to users.
+
+When you send a message to ChatGPT:
+
+\begin{enumerate}
+  \item Your message arrives at a server.
+  \item The server loads the trained model parameters.
+  \item The model performs a mathematical computation on your message
+        using those parameters.
+  \item The model outputs a response --- word by word, or technically,
+        \textit{token by token}.
+  \item The response is sent back to you.
+\end{enumerate}
+
+That entire process --- steps 1 through 5 --- is called a single
+\term{inference request}.
+
+\begin{defbox}[AI Inference]
+\textbf{AI Inference} is the process of running a trained AI model
+on new input data to produce a prediction or output.\\[4pt]
+The model parameters (weights) do not change during inference.
+The model simply \textit{applies} its learned knowledge to the input.
+\end{defbox}
+
+\subsection{The Key Mathematical Operation}
+
+If you want to understand inference at its heart, here is the core
+mathematical reality:
+
+An AI language model is, at its most fundamental level, a very large
+mathematical function:
+
+\[
+  \mathbf{output} = f(\mathbf{input},\ \boldsymbol{\theta})
+\]
+
+where:
+\begin{itemize}
+  \item $\mathbf{input}$ is the text you provided (encoded as numbers)
+  \item $\boldsymbol{\theta}$ (theta) represents the model's
+        \textit{billions of parameters} --- its learned knowledge
+  \item $f$ is the series of mathematical operations the model performs
+        (matrix multiplications, attention computations, activations)
+  \item $\mathbf{output}$ is the probability distribution over the next
+        token to generate
+\end{itemize}
+
+During inference, $\boldsymbol{\theta}$ is \textbf{fixed}.
+Only $\mathbf{input}$ varies.
+The model's job is simply to evaluate this function quickly and correctly.
+
+\begin{insightbox}[The Core Challenge]
+GPT-4 has approximately \textbf{1.76 trillion parameters}.
+Each parameter is a floating-point number (typically 16 bits = 2 bytes).
+That alone is \textbf{3.5 terabytes of data} --- just to store the model.\\[4pt]
+Loading, managing, and computing with that much data,
+at high speed, for millions of users simultaneously,
+is the fundamental engineering challenge of AI inference.
+\end{insightbox}
+
+%% ───────────────────────────────────────────────────────────
+\section{Training vs.\ Inference: Understanding the Difference}
+%% ───────────────────────────────────────────────────────────
+
+This is one of the most important distinctions in AI engineering.
+Training and inference look superficially similar --- both run the
+model on data --- but they are \textit{fundamentally different
+engineering problems}.
+
+\subsection{What Happens During Training?}
+
+During training, the goal is to \textit{improve} the model's parameters.
+
+The process works like this:
+\begin{enumerate}
+  \item Feed a batch of training examples into the model.
+  \item The model makes predictions (a \textit{forward pass}).
+  \item Compare the predictions to the correct answers.
+        Compute a \textit{loss} (how wrong was the model?).
+  \item Use calculus (\textit{backpropagation}) to compute how each
+        parameter contributed to the error.
+  \item Adjust the parameters slightly in the direction that reduces
+        the error (\textit{gradient descent}).
+  \item Repeat billions of times.
+\end{enumerate}
+
+Step 4 --- backpropagation --- requires storing intermediate computations
+from the forward pass so gradients can flow backwards.
+This is called the \term{activation memory} or \term{gradient memory}
+and it is \textit{enormous} --- often 5--10x the size of the model itself.
+
+\subsection{What Happens During Inference?}
+
+During inference:
+\begin{enumerate}
+  \item Feed a user's input into the model.
+  \item The model makes a prediction (forward pass only).
+  \item Return the prediction.
+\end{enumerate}
+
+That's it. No backpropagation. No gradient storage. No parameter updates.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  node distance=0.7cm and 1.6cm,
+  block/.style={
+    rectangle, rounded corners=4pt, draw,
+    minimum width=2.8cm, minimum height=0.8cm,
+    font=\small, align=center
+  },
+  trainblock/.style={block, fill=orange!20, draw=orange!70},
+  inferblock/.style={block, fill=blue!15, draw=blue!60},
+  arrow/.style={->, >=Stealth, thick},
+  trainarrow/.style={arrow, color=orange!80},
+  inferarrow/.style={arrow, color=blue!70},
+]
+
+%% TRAINING column
+\node[trainblock] (tdata)  {Training Data};
+\node[trainblock, below=of tdata] (tforward) {Forward Pass\\{\tiny compute predictions}};
+\node[trainblock, below=of tforward] (tloss)   {Loss Computation\\{\tiny how wrong?}};
+\node[trainblock, below=of tloss] (tback)    {Backpropagation\\{\tiny compute gradients}};
+\node[trainblock, below=of tback] (tupdate)  {Parameter Update\\{\tiny improve model}};
+
+\draw[trainarrow] (tdata) -- (tforward);
+\draw[trainarrow] (tforward) -- (tloss);
+\draw[trainarrow] (tloss) -- (tback);
+\draw[trainarrow] (tback) -- (tupdate);
+\draw[trainarrow] (tupdate.east) to[out=0, in=0, looseness=2.5]
+                  node[right, font=\tiny\color{orange!80}]{repeat\\billions\\of times}
+                  (tdata.east);
+
+\node[above=0.2cm of tdata, font=\bfseries\color{orange!80}] {TRAINING};
+\node[below=0.2cm of tupdate, font=\small\color{orange!60},
+      text width=3.5cm, align=center]
+  {Parameters \textbf{change}\\weeks on 1000s of GPUs};
+
+%% INFERENCE column
+\node[inferblock, right=3.8cm of tdata] (iinput) {User Input};
+\node[inferblock, below=of iinput] (iforward) {Forward Pass\\{\tiny apply model}};
+\node[inferblock, below=of iforward] (ioutput)  {Output Tokens\\{\tiny prediction}};
+\node[inferblock, below=of ioutput] (ireturn) {Return Response\\{\tiny to user}};
+
+\draw[inferarrow] (iinput) -- (iforward);
+\draw[inferarrow] (iforward) -- (ioutput);
+\draw[inferarrow] (ioutput) -- (ireturn);
+
+\node[above=0.2cm of iinput, font=\bfseries\color{blue!70}] {INFERENCE};
+\node[below=0.2cm of ireturn, font=\small\color{blue!60},
+      text width=3.5cm, align=center]
+  {Parameters \textbf{fixed}\\milliseconds per request};
+
+%% Vertical separator
+\draw[dashed, gray!50, thick]
+  ($(tdata.east)!0.5!(iinput.west)+(0,0.8)$) --
+  ($(tupdate.east)!0.5!(ireturn.west)-(0,0.8)$);
+
+%% Memory annotations
+\draw[<->, red!60, dashed]
+  (tback.west) -- ++(-0.7,0)
+  node[left, red!60, font=\tiny, text width=1.4cm, align=center]
+    {Stores gradients\\5--10$\times$ model size};
+
+\draw[<->, accentgreen!70, dashed]
+  (iforward.east) -- ++(0.7,0)
+  node[right, accentgreen!70, font=\tiny, text width=1.4cm, align=center]
+    {No gradients\\stored};
+
+\end{tikzpicture}
+\caption{Training vs.\ Inference. Training requires storing large
+intermediate activations for backpropagation. Inference only needs
+a single forward pass, making memory requirements dramatically lower.}
+\label{fig:train-vs-infer}
+\end{figure}
+
+\subsection{Why This Distinction Matters Enormously}
+
+The difference between training and inference isn't just academic ---
+it completely changes the engineering requirements:
+
+\vspace{6pt}
+\rowcolors{2}{tablerowodd}{tableroweven}
+\begin{longtable}{>{\bfseries}p{3cm} p{5cm} p{5cm}}
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Dimension}} &
+\textcolor{white}{\textbf{Training}} &
+\textcolor{white}{\textbf{Inference}} \\
+\toprule
+\endfirsthead
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Dimension}} &
+\textcolor{white}{\textbf{Training}} &
+\textcolor{white}{\textbf{Inference}} \\
+\toprule
+\endhead
+Goal & Improve model weights & Apply model to new inputs \\
+Frequency & Once (or periodic) & Millions of times per day \\
+Latency need & Hours/days acceptable & Milliseconds required \\
+Memory use & Very high (gradients) & Lower (weights only) \\
+Compute pattern & Batch, parallel & Often sequential (autoregressive) \\
+Cost driver & GPU-hours of compute & Cost per token at scale \\
+Batching & Large fixed batches & Dynamic, variable batch sizes \\
+Parameter state & Changing constantly & Completely frozen \\
+Primary metric & Loss convergence & Latency / throughput \\
+Engineering focus & Distributed training & Serving optimisation \\
+\bottomrule
+\caption{Key differences between training and inference workloads.}
+\label{tab:train-vs-infer}
+\end{longtable}
+
+\begin{notebox}[The Business Reality]
+OpenAI reportedly spends approximately \$700,000 per day running
+ChatGPT inference. Google runs billions of AI inference calls daily
+across its products. Amazon, Microsoft, and Meta each operate
+inference clusters of tens of thousands of GPUs.\\[4pt]
+Training is a one-time (or infrequent) cost.
+\textbf{Inference is an ongoing, relentless operational cost.}
+This is why inference engineering has become a separate discipline.
+\end{notebox}
+
+%% ───────────────────────────────────────────────────────────
+\section{Why Inference Engineering Matters}
+%% ───────────────────────────────────────────────────────────
+
+You might wonder: ``If inference is just running the model,
+how complex can it really be?''
+
+The answer is: extraordinarily complex. Let us walk through why.
+
+\subsection{The Scale Problem}
+
+Consider ChatGPT during peak usage:
+\begin{itemize}
+  \item Approximately \textbf{10 million daily active users}
+  \item Each user sends multiple messages per session
+  \item Each message might generate 200--500 output tokens
+  \item Each token requires evaluating a model with hundreds of billions
+        of parameters
+  \item Total: potentially \textbf{billions of model evaluations per day}
+\end{itemize}
+
+Now add this constraint: users expect responses within \textbf{1--2 seconds}.
+
+This is roughly equivalent to a restaurant that must:
+\begin{itemize}
+  \item Serve \textit{millions of customers simultaneously}
+  \item Each meal is a custom five-course dinner (not fast food)
+  \item Every meal must be ready within 2 minutes of ordering
+  \item The kitchen has a fixed, enormous cost to operate
+\end{itemize}
+
+No traditional software system faces this combination of constraints.
+Inference engineering exists to solve them.
+
+\subsection{The Three Core Tensions}
+
+Every inference engineering decision involves balancing three competing
+objectives:
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1.0]
+  % Triangle
+  \coordinate (A) at (0, 0);
+  \coordinate (B) at (6, 0);
+  \coordinate (C) at (3, 5.2);
+
+  \fill[chaptercolor!10] (A) -- (B) -- (C) -- cycle;
+  \draw[chaptercolor, very thick] (A) -- (B) -- (C) -- cycle;
+
+  % Labels at corners
+  \node[below left, font=\bfseries\large\color{chaptercolor},
+        align=center] at (A)
+    {Low\\Latency};
+  \node[below right, font=\bfseries\large\color{chaptercolor},
+        align=center] at (B)
+    {High\\Throughput};
+  \node[above, font=\bfseries\large\color{chaptercolor},
+        align=center] at (C)
+    {Low\\Cost};
+
+  % Central annotation
+  \node[font=\small\itshape, text width=3cm, align=center,
+        color=accentorange] at (3, 1.8)
+    {You can only fully\\optimise \textbf{two} of these\\at once};
+
+  % Small icons
+  \node[font=\Large] at (0.2, 0.5) {⚡};
+  \node[font=\Large] at (5.8, 0.5) {🚀};
+  \node[font=\Large] at (3, 4.6)   {💰};
+
+  % Edge annotations
+  \node[font=\small\color{gray}, rotate=41, above] at (1.5, 2.6)
+    {Batching helps};
+  \node[font=\small\color{gray}, rotate=-41, above] at (4.5, 2.6)
+    {Quantisation helps};
+  \node[font=\small\color{gray}, below] at (3, -0.3)
+    {Caching helps};
+
+\end{tikzpicture}
+\caption{The Inference Engineering Trilemma. Every system design must
+explicitly choose which objectives to prioritise.}
+\label{fig:trilemma}
+\end{figure}
+
+\begin{itemize}
+  \item \term{Latency}: How long does a single user wait for their
+        response? (measured in milliseconds)
+  \item \term{Throughput}: How many total requests can the system
+        handle per second across all users?
+  \item \term{Cost}: How much does it cost to serve each request?
+        (measured in dollars per million tokens, often written
+        \$/MTok)
+\end{itemize}
+
+These three objectives \textit{pull against each other}.
+Making one better often makes another worse.
+
+\begin{analogybox}[The Bus vs.\ Taxi Analogy]
+\textbf{A taxi} picks you up immediately (low latency) but can only
+carry one passenger (low throughput) and is expensive per person
+(high cost).\\[4pt]
+\textbf{A bus} waits until it is full (higher latency) but carries
+many passengers at once (high throughput) and is cheap per person
+(low cost).\\[4pt]
+Inference systems face exactly this tradeoff.
+\textit{Batching} is the bus strategy.
+\textit{Streaming} is the taxi strategy.
+The best inference engines choose intelligently based on load.
+\end{analogybox}
+
+\subsection{Performance Numbers That Matter in Production}
+
+Here are the performance targets that production AI companies actually
+care about:
+
+\vspace{6pt}
+\rowcolors{2}{tablerowodd}{tableroweven}
+\begin{longtable}{>{\bfseries}p{4cm} p{4cm} p{4cm}}
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Metric}} &
+\textcolor{white}{\textbf{Target (Consumer)}} &
+\textcolor{white}{\textbf{Target (Enterprise)}} \\
+\toprule
+\endfirsthead
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Metric}} &
+\textcolor{white}{\textbf{Target (Consumer)}} &
+\textcolor{white}{\textbf{Target (Enterprise)}} \\
+\toprule
+\endhead
+Time to first token (TTFT) & $<$ 500ms & $<$ 200ms \\
+Tokens per second (TPS) & 20--50 tok/s & 50--200 tok/s \\
+P99 latency & $<$ 5s & $<$ 2s \\
+Cost per million tokens & \$0.50--\$5.00 & \$0.10--\$1.00 \\
+GPU utilisation & $>$ 60\% & $>$ 80\% \\
+Requests per GPU per hour & 100--500 & 500--5000 \\
+\bottomrule
+\caption{Typical production performance targets for LLM inference systems.}
+\label{tab:perf-targets}
+\end{longtable}
+
+\begin{notebox}[What TTFT Means]
+\term{Time to First Token (TTFT)} is the time from when you press
+``send'' to when you see the \textit{first word} of the response appear.
+It is arguably the most important user-facing latency metric because
+it determines whether the system feels ``responsive'' or ``slow.''\\[4pt]
+A system generating 50 tokens per second but with a 3-second TTFT
+will feel slow, even if the total generation time is short.
+\end{notebox}
+
+%% ───────────────────────────────────────────────────────────
+\section{The Anatomy of an Inference System}
+%% ───────────────────────────────────────────────────────────
+
+Before we go deeper, let us trace exactly what happens when you send
+a message to a production AI system.
+Understanding this flow is essential --- every optimisation technique
+we will learn in later chapters targets a specific step in this journey.
+
+\subsection{The Complete Request Lifecycle}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  node distance=0.5cm and 0.2cm,
+  userbox/.style={
+    rectangle, rounded corners=6pt, draw=accentorange!80,
+    fill=accentorange!10, minimum width=2.0cm, minimum height=0.7cm,
+    font=\small\bfseries, align=center
+  },
+  sysbox/.style={
+    rectangle, rounded corners=4pt, draw=chaptercolor!70,
+    fill=chaptercolor!8, minimum width=2.5cm, minimum height=0.7cm,
+    font=\small, align=center
+  },
+  gpubox/.style={
+    rectangle, rounded corners=4pt, draw=accentgreen!80,
+    fill=accentgreen!10, minimum width=2.5cm, minimum height=0.7cm,
+    font=\small, align=center
+  },
+  arrow/.style={->, >=Stealth, thick, color=gray!70},
+  label/.style={font=\tiny\color{gray}, midway, above},
+]
+
+% Row 1: User
+\node[userbox] (user) {User\\(Browser/App)};
+
+% Row 2: Edge
+\node[sysbox, right=1.6cm of user] (cdn) {CDN /\\Load Balancer};
+\node[sysbox, right=1.0cm of cdn] (gateway) {API\\Gateway};
+\node[sysbox, right=1.0cm of gateway] (auth) {Auth \&\\Rate Limit};
+
+% Row 3: Inference engine
+\node[sysbox, below=1.6cm of cdn] (scheduler) {Request\\Scheduler};
+\node[sysbox, right=1.0cm of scheduler] (tokenizer) {Tokeniser\\Preprocessing};
+\node[gpubox, right=1.0cm of tokenizer] (prefill) {Prefill\\(GPU)};
+\node[gpubox, right=1.0cm of prefill] (decode) {Decode\\(GPU loop)};
+
+% Row 4: Storage
+\node[sysbox, below=1.6cm of tokenizer] (kvcache) {KV Cache\\(GPU Memory)};
+\node[sysbox, right=1.0cm of kvcache] (weights) {Model Weights\\(GPU Memory)};
+\node[sysbox, right=1.0cm of weights] (detok) {Detokeniser\\Postprocessing};
+
+% Arrows - top row
+\draw[arrow] (user) -- (cdn) node[label] {HTTPS};
+\draw[arrow] (cdn) -- (gateway) node[label] {HTTP/2};
+\draw[arrow] (gateway) -- (auth) node[label] {};
+
+% Down to scheduler
+\draw[arrow] (auth) -- ++(0,-0.9) -| (scheduler);
+
+% Middle row
+\draw[arrow] (scheduler) -- (tokenizer) node[label] {};
+\draw[arrow] (tokenizer) -- (prefill) node[label] {};
+\draw[arrow] (prefill) -- (decode) node[label] {KV cache};
+
+% Down to storage
+\draw[arrow] (prefill.south) -- ++(0,-0.4) -| (kvcache);
+\draw[arrow] (kvcache.north) -- ++(0,0.4) -| (prefill);
+
+% Weights to GPUs
+\draw[arrow] (weights.north) -- ++(0,0.8) -| (prefill.south);
+
+% Decode to detokeniser
+\draw[arrow] (decode.south) -- ++(0,-0.8) -- (detok.north);
+
+% Back to user
+\draw[arrow, color=accentorange!60] (detok.west) -- ++(-8.5,0) node[midway, above, font=\tiny\color{accentorange}] {streaming tokens back to user} |- (user.south);
+
+% Timing annotations
+\node[font=\tiny, color=gray, text width=1.4cm, align=center,
+      below=0.1cm of scheduler]
+  {$<$1ms routing};
+\node[font=\tiny, color=gray, text width=1.4cm, align=center,
+      below=0.1cm of prefill]
+  {10--200ms\\prefill};
+\node[font=\tiny, color=gray, text width=1.4cm, align=center,
+      below=0.1cm of decode]
+  {20ms/token\\decode};
+
+\end{tikzpicture}
+\caption{Anatomy of a production inference request. Each box represents
+a system component that we will study in detail in later chapters.}
+\label{fig:request-lifecycle}
+\end{figure}
+
+Let's walk through each stage:
+
+\subsubsection{Stage 1: Network Ingress (0--5 ms)}
+Your request travels over the internet to the nearest \term{CDN edge
+node} (Content Delivery Network). The request is routed to the closest
+data centre to reduce network round-trip time.
+
+\subsubsection{Stage 2: API Gateway and Authentication (1--10 ms)}
+The API gateway validates your API key, checks your rate limits,
+and decides whether to accept or queue your request.
+This protects the system from being overwhelmed.
+
+\subsubsection{Stage 3: Request Scheduling ($<$1 ms)}
+The \term{request scheduler} --- one of the most important components
+in a modern inference engine --- decides:
+\begin{itemize}
+  \item Which GPU cluster will handle this request?
+  \item Should this request be batched with other pending requests?
+  \item How much priority should this request receive?
+\end{itemize}
+
+\subsubsection{Stage 4: Tokenisation (0.5--2 ms)}
+Your text is converted into \term{tokens} --- numerical IDs from the
+model's vocabulary. The word ``inference'' might become token 23847.
+``engineering'' might become tokens 45231 + 9182 (split into sub-words).
+This tokenised input is what the GPU will actually process.
+
+\subsubsection{Stage 5: Prefill Phase (10--500 ms)}
+This is where real GPU computation begins.
+The model processes your \textit{entire input prompt} in parallel to
+build an internal representation of what you have said.
+
+Think of it as the model ``reading and comprehending'' your entire
+message at once before it starts responding.
+
+This phase is compute-intensive and its duration scales with the
+length of your prompt.
+
+\subsubsection{Stage 6: Decode Phase (20--50 ms per token)}
+Now the model begins generating tokens \textit{one at a time}.
+Each token requires:
+\begin{enumerate}
+  \item Loading the model weights from GPU memory
+  \item Performing a forward pass through the model
+  \item Sampling the next token from the probability distribution
+  \item Appending the new token to the context
+  \item Repeating for the next token
+\end{enumerate}
+
+This sequential nature is what makes LLM inference fundamentally
+different from other AI workloads --- and is the source of many of
+the key optimisations we will study.
+
+\subsubsection{Stage 7: Detokenisation and Return}
+Each generated token ID is converted back to text and streamed back
+to you --- which is why you see text appearing word by word on your
+screen rather than all at once.
+
+\begin{insightbox}[The Decode Phase Bottleneck]
+The decode phase is typically the \textbf{primary bottleneck} in
+LLM inference. Why? Because each token generation requires reading
+the \textit{entire model} from GPU memory --- often hundreds of
+gigabytes. Modern GPUs can read memory at 3--8 TB/s, but that is
+still the limiting factor. This is called being
+\textbf{memory-bandwidth-bound}, and we will explore it extensively
+in Chapter 3.
+\end{insightbox}
+
+%% ───────────────────────────────────────────────────────────
+\section{The Hardware Landscape}
+%% ───────────────────────────────────────────────────────────
+
+AI inference runs on specialised hardware. Understanding this hardware
+--- at least conceptually --- is essential for understanding why
+inference systems are designed the way they are.
+
+\subsection{The GPU: Heart of Inference}
+
+A \term{GPU} (Graphics Processing Unit) was originally designed to
+render video game graphics. It turns out that the mathematical
+operations needed for graphics --- thousands of small matrix
+multiplications in parallel --- are identical to the operations
+needed for AI neural network inference.
+
+\begin{analogybox}[CPU vs.\ GPU: The Factory Analogy]
+\textbf{A CPU} is like a small team of highly-skilled engineers.
+There are 8--64 of them. Each one is incredibly smart, can handle
+complex tasks, and can switch between very different jobs instantly.
+But you only have a few of them.\\[6pt]
+\textbf{A GPU} is like a factory floor with 10,000 workers.
+Each individual worker is less capable --- they can only do simple
+arithmetic. But having 10,000 of them working simultaneously means
+they can process enormous amounts of data in parallel.\\[6pt]
+Neural network inference is essentially: ``multiply these 100 billion
+numbers together in the right way.'' That's a perfect job for 10,000
+parallel workers.
+\end{analogybox}
+
+\subsection{Key GPU Specifications That Matter}
+
+When you hear about an NVIDIA H100 or A100 GPU being used for AI
+inference, here are the numbers that actually matter:
+
+\vspace{6pt}
+\rowcolors{2}{tablerowodd}{tableroweven}
+\begin{longtable}{>{\bfseries}p{3.5cm} p{3.2cm} p{3.2cm} p{2.5cm}}
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Specification}} &
+\textcolor{white}{\textbf{NVIDIA A100 (80G)}} &
+\textcolor{white}{\textbf{NVIDIA H100 (80G)}} &
+\textcolor{white}{\textbf{Why It Matters}} \\
+\toprule
+\endfirsthead
+\rowcolor{tableheadbg}
+\textcolor{white}{\textbf{Specification}} &
+\textcolor{white}{\textbf{NVIDIA A100 (80G)}} &
+\textcolor{white}{\textbf{NVIDIA H100 (80G)}} &
+\textcolor{white}{\textbf{Why It Matters}} \\
+\toprule
+\endhead
+VRAM (memory) & 80 GB & 80 GB & Model must fit in VRAM \\
+Memory bandwidth & 2.0 TB/s & 3.35 TB/s & Decode speed \\
+FP16 TFLOPS & 312 & 989 & Prefill speed \\
+Tensor cores & 432 & 528 & Matrix multiply speed \\
+NVLink bandwidth & 600 GB/s & 900 GB/s & Multi-GPU communication \\
+TDP (power) & 400W & 700W & Operational cost \\
+\bottomrule
+\caption{Key GPU specifications relevant to AI inference.}
+\label{tab:gpu-specs}
+\end{longtable}
+
+\subsection{The Memory Hierarchy}
+
+Understanding where data lives during inference is crucial.
+The memory hierarchy is a pyramid: faster memory at the top but
+smaller capacity, slower memory at the bottom but larger capacity.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.95]
+  % Define pyramid layers from top to bottom
+  % Each layer: y-position, half-width, colour, label, stats
+
+  % Layer 5 (top): Registers / L1 Cache
+  \fill[red!80] (0,6.5) -- (0.6,7.2) -- (-0.6,7.2) -- cycle;
+  \fill[red!80] (-0.6,6.5) rectangle (0.6,7.2);
+  \node[right, font=\small\bfseries] at (0.7, 6.85)
+    {L1 Cache / Shared Memory};
+  \node[right, font=\tiny\color{gray}] at (0.7, 6.55)
+    {$\sim$256 KB/SM\ \ |\ \ $\sim$19 TB/s};
+
+  % Layer 4: L2 Cache
+  \fill[orange!70] (-1.2,5.7) rectangle (1.2,6.4);
+  \node[right, font=\small\bfseries] at (1.3, 6.05)
+    {L2 Cache};
+  \node[right, font=\tiny\color{gray}] at (1.3, 5.75)
+    {50 MB\ \ |\ \ $\sim$7 TB/s};
+
+  % Layer 3: HBM (GPU VRAM)
+  \fill[yellow!70] (-2.2,4.5) rectangle (2.2,5.6);
+  \node[right, font=\small\bfseries] at (2.3, 5.2)
+    {HBM (GPU VRAM)};
+  \node[right, font=\tiny\color{gray}] at (2.3, 4.7)
+    {80 GB\ \ |\ \ 3.35 TB/s (H100)};
+  \node[font=\tiny\itshape, text width=4.3cm, align=center,
+        color=chaptercolor] at (0,5.05)
+    {Model weights live here\\KV cache lives here};
+
+  % Layer 2: CPU DRAM / NVLink
+  \fill[accentgreen!40] (-3.2,3.2) rectangle (3.2,4.4);
+  \node[right, font=\small\bfseries] at (3.3, 3.95)
+    {CPU DRAM / NVLink};
+  \node[right, font=\tiny\color{gray}] at (3.3, 3.45)
+    {0.5--2 TB\ \ |\ \ 50--900 GB/s};
+  \node[font=\tiny\itshape, color=gray] at (0,3.8)
+    {Overflow weights, inter-GPU data};
+
+  % Layer 1 (bottom): SSD / NVMe
+  \fill[blue!25] (-4.2,1.7) rectangle (4.2,3.1);
+  \node[right, font=\small\bfseries] at (4.3, 2.55)
+    {NVMe SSD};
+  \node[right, font=\tiny\color{gray}] at (4.3, 2.05)
+    {10--100 TB\ \ |\ \ 7--12 GB/s};
+  \node[font=\tiny\itshape, color=gray] at (0,2.4)
+    {Model checkpoint storage};
+
+  % Layer 0: Object Storage
+  \fill[gray!20] (-5.0,0.2) rectangle (5.0,1.6);
+  \node[right, font=\small\bfseries] at (5.1, 1.1)
+    {Object Storage (S3/GCS)};
+  \node[right, font=\tiny\color{gray}] at (5.1, 0.6)
+    {Unlimited\ \ |\ \ 1--10 GB/s};
+
+  % Speed labels on left
+  \node[left, font=\tiny\bfseries\color{red!70}] at (-4.3, 6.85) {FASTEST};
+  \node[left, font=\tiny\bfseries\color{gray}] at (-4.3, 0.9)    {SLOWEST};
+  \draw[->, gray!50, dashed] (-4.1,1.0) -- (-4.1,6.7);
+  \node[left, font=\tiny\color{gray}, rotate=90] at (-4.6,3.9) {Speed};
+
+\end{tikzpicture}
+\caption{The memory hierarchy in a modern GPU inference system.
+The goal of inference optimisation is to keep hot data as high up
+this pyramid as possible.}
+\label{fig:memory-hierarchy}
+\end{figure}
+
+The fundamental rule of inference engineering is:
+\textbf{data that is accessed frequently should live as close to the
+GPU compute units as possible.}
+
+Every optimisation technique we study --- KV caching, quantisation,
+weight sharing --- can be understood as trying to keep the right data
+at the right level of this memory hierarchy.
+
+%% ───────────────────────────────────────────────────────────
+\section{The Evolution of AI Inference Infrastructure}
+%% ───────────────────────────────────────────────────────────
+
+To understand where we are today and where we are going, we need to
+understand where we came from.
+
+\subsection{Era 1: Research-Scale Models (2012--2017)}
+
+The deep learning revolution began with AlexNet winning the ImageNet
+competition in 2012. Models were relatively small (millions of parameters),
+ran on single GPUs, and inference was simple: run the model, get the
+prediction, done.
+
+The engineering challenge was primarily training efficiency.
+Inference was an afterthought.
+
+\subsection{Era 2: The Rise of Pre-trained Models (2018--2020)}
+
+BERT (2018) and GPT-2 (2019) introduced the concept of large pre-trained
+transformer models fine-tuned for downstream tasks.
+Models grew to billions of parameters.
+
+Suddenly, inference required serious thought:
+\begin{itemize}
+  \item Models no longer fit easily on single GPUs
+  \item Serving latency became a customer-facing concern
+  \item Companies began building dedicated serving infrastructure
+\end{itemize}
+
+TensorFlow Serving and TorchServe emerged as early inference servers.
+
+\subsection{Era 3: The LLM Explosion (2020--2022)}
+
+GPT-3 (2020) with 175 billion parameters changed everything.
+No single consumer GPU could hold it.
+Running inference required \textit{model parallelism} across multiple GPUs.
+
+OpenAI, Google, and DeepMind began building specialised inference
+infrastructure at massive scale.
+The \term{transformer} architecture became universal.
+New optimisation techniques emerged:
+\begin{itemize}
+  \item Quantisation (reduce precision to save memory)
+  \item KV caching (avoid redundant computation)
+  \item Tensor parallelism (split the model across GPUs)
+  \item Continuous batching (process requests without gaps)
+\end{itemize}
+
+\subsection{Era 4: The Commercial Deployment Era (2022--Present)}
+
+ChatGPT's launch in November 2022 caused a step-change in the scale
+of inference systems. Suddenly, systems that researchers had designed
+for thousands of queries per day needed to handle \textit{millions}.
+
+This era saw:
+\begin{itemize}
+  \item Purpose-built inference engines: \textbf{vLLM}, \textbf{TensorRT-LLM},
+        \textbf{Triton Inference Server}, \textbf{TGI (Text Generation Inference)}
+  \item New serving paradigms: \term{PagedAttention},
+        \term{speculative decoding}, \term{disaggregated prefill}
+  \item Hardware specialisation: TPUs, AWS Trainium/Inferentia,
+        custom inference chips
+  \item Multi-model serving, router architectures, mixture-of-experts
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[xscale=1.35, yscale=0.85]
+
+  % Timeline axis
+  \draw[->, very thick, chaptercolor] (0,0) -- (11.5,0)
+    node[right] {\textbf{Year}};
+  \draw[->, very thick, chaptercolor] (0,0) -- (0,7.5)
+    node[above] {\textbf{Scale}};
+
+  % Y-axis labels
+  \foreach \y/\label in {1/1M, 2/10M, 3/100M, 4/1B, 5/10B, 6/100B, 7/1T} {
+    \draw[gray!30] (0,\y) -- (11.2,\y);
+    \node[left, font=\tiny\color{gray}] at (-0.1,\y) {\label};
+  }
+
+  % X-axis ticks and labels
+  \foreach \x/\year in {0.5/2012, 1.5/2014, 2.5/2016, 3.5/2018,
+                         4.5/2019, 5.5/2020, 6.5/2021, 7.5/2022,
+                         8.5/2023, 9.5/2024, 10.5/2025} {
+    \draw[gray!40] (\x, -0.1) -- (\x, 0.1);
+    \node[below, font=\tiny\color{gray}, rotate=45] at (\x,-0.15) {\year};
+  }
+
+  % Model parameter curve (approximate)
+  \draw[chaptercolor, very thick, smooth]
+    plot coordinates {
+      (0.5, 1.5)   % AlexNet ~60M
+      (1.5, 2.0)   % VGG ~140M
+      (2.5, 2.5)   % ResNet ~25M (smaller but deeper)
+      (3.5, 3.1)   % BERT 340M
+      (4.5, 3.7)   % GPT-2 1.5B
+      (5.5, 5.2)   % GPT-3 175B
+      (6.5, 5.5)   % ~400B range
+      (7.5, 5.8)   % ChatGPT era
+      (8.5, 6.3)   % GPT-4 ~1.76T (estimated)
+      (9.5, 6.5)
+      (10.5,6.8)
+    };
+
+  % Era bands
+  \fill[orange!8] (0,0) rectangle (3.0,7.2);
+  \fill[yellow!8] (3.0,0) rectangle (5.0,7.2);
+  \fill[green!8]  (5.0,0) rectangle (7.0,7.2);
+  \fill[blue!8]   (7.0,0) rectangle (11.2,7.2);
+
+  \node[font=\tiny\bfseries\color{orange!70}, rotate=90] at (1.5, 3.6)
+    {Era 1: Research};
+  \node[font=\tiny\bfseries\color{yellow!70!black}, rotate=90] at (4.0, 3.6)
+    {Era 2: Pre-trained};
+  \node[font=\tiny\bfseries\color{accentgreen!80}, rotate=90] at (6.0, 3.6)
+    {Era 3: LLM};
+  \node[font=\tiny\bfseries\color{chaptercolor}, rotate=90] at (9.1, 3.6)
+    {Era 4: Commercial Scale};
+
+  % Landmark model annotations
+  \fill[orange!80] (0.5, 1.5) circle (3pt)
+    node[above right, font=\tiny] {AlexNet};
+  \fill[chaptercolor] (3.5, 3.1) circle (3pt)
+    node[above right, font=\tiny] {BERT};
+  \fill[chaptercolor] (5.5, 5.2) circle (3pt)
+    node[above right, font=\tiny] {GPT-3};
+  \fill[accentorange] (7.5, 5.8) circle (3pt)
+    node[above right, font=\tiny] {ChatGPT};
+  \fill[red!70] (8.5, 6.3) circle (3pt)
+    node[above right, font=\tiny] {GPT-4 ($\sim$1.76T)};
+
+  % Y-axis label (rotated)
+  \node[rotate=90, font=\small\color{chaptercolor}] at (-1.2,3.6)
+    {Approximate Parameters};
+
+\end{tikzpicture}
+\caption{Evolution of AI model scale over time, showing the four eras
+of AI inference infrastructure. Note the logarithmic scale on the
+y-axis --- each step represents a $10\times$ increase in parameters.}
+\label{fig:evolution}
+\end{figure}
+
+%% ───────────────────────────────────────────────────────────
+\section{Modern Inference Systems: A Tour}
+%% ───────────────────────────────────────────────────────────
+
+Let us briefly survey the major inference engines and systems
+that power today's AI products.
+We will study each of these in detail in later chapters.
+
+\subsection{vLLM: PagedAttention and Continuous Batching}
+
+vLLM, developed at UC Berkeley in 2023, is arguably the most
+influential open-source LLM inference engine.
+Its two key innovations are:
+
+\begin{itemize}
+  \item \term{PagedAttention}: A memory management technique that
+        treats GPU memory like virtual memory in operating systems,
+        reducing memory waste from 60--80\% down to under 4\%.
+  \item \term{Continuous Batching}: Instead of waiting for a full
+        batch before processing, vLLM dynamically adds and removes
+        requests from the processing queue, dramatically improving GPU
+        utilisation.
+\end{itemize}
+
+In benchmarks, vLLM achieves \textbf{2--4$\times$ higher throughput}
+compared to naive serving approaches.
+
+\subsection{TensorRT-LLM: NVIDIA's Production Engine}
+
+TensorRT-LLM is NVIDIA's production inference engine.
+It compiles model graphs into highly optimised machine code specific
+to NVIDIA GPU architectures.
+
+Key features:
+\begin{itemize}
+  \item Kernel fusion (combines multiple operations into one GPU kernel)
+  \item INT8/FP8 quantisation with hardware-native support
+  \item In-flight batching (similar to continuous batching)
+  \item Custom CUDA kernels for attention, LayerNorm, etc.
+\end{itemize}
+
+TensorRT-LLM typically achieves \textbf{40--60\% higher throughput}
+than PyTorch-based serving.
+
+\subsection{Text Generation Inference (TGI)}
+
+Hugging Face's TGI is widely used for open-source model deployment.
+It supports a wide range of models and provides production-grade
+features like tensor parallelism, quantisation, and Prometheus metrics.
+
+\subsection{Triton Inference Server}
+
+NVIDIA's Triton is a \textit{model-agnostic} serving framework that
+supports TensorRT, PyTorch, TensorFlow, ONNX, and custom backends.
+It is commonly used in enterprise deployments where multiple model
+types need to be served from a unified platform.
+
+\subsection{Production Cloud Services}
+
+At the cloud provider level:
+\begin{itemize}
+  \item \textbf{AWS Bedrock}: Serves Claude, Llama, Mistral, and others
+        on Inferentia2 and GPU instances
+  \item \textbf{Google Vertex AI}: Serves Gemini on custom TPU infrastructure
+  \item \textbf{Azure OpenAI}: Serves GPT-4 on custom NVIDIA clusters
+  \item \textbf{Groq}: Uses custom LPU (Language Processing Unit) hardware
+        designed specifically for LLM inference, achieving extremely
+        high token generation speeds ($>$ 500 tokens/second)
+\end{itemize}
+
+%% ───────────────────────────────────────────────────────────
+\section{Real-World Applications and Use Cases}
+%% ───────────────────────────────────────────────────────────
+
+Let us ground these concepts by looking at how real systems use
+AI inference.
+
+\subsection{Conversational AI (ChatGPT, Claude, Gemini)}
+
+The canonical inference use case.
+Key characteristics:
+\begin{itemize}
+  \item Interactive: users expect sub-second TTFT
+  \item Variable length: inputs range from 10 to 100,000+ tokens
+  \item Stateless per request (context is re-sent each time)
+  \item Requires streaming output (word by word display)
+  \item High concurrency: millions of simultaneous users
+\end{itemize}
+
+\subsection{Code Generation (GitHub Copilot, Cursor)}
+
+Code completion requires:
+\begin{itemize}
+  \item Extremely low latency ($<$ 100ms) --- must feel instant as you type
+  \item High throughput --- millions of suggestions per minute
+  \item Short outputs (typically 1--10 lines)
+  \item Context window efficiency (large code files as context)
+\end{itemize}
+
+GitHub Copilot reportedly handles over \textbf{1 million suggestions
+per day} at sub-100ms latency.
+
+\subsection{Document Processing (RAG, Summarisation)}
+
+Retrieval-Augmented Generation (RAG) pipelines combine AI inference
+with database retrieval:
+\begin{enumerate}
+  \item User query → embedding model inference (fast, $<$10ms)
+  \item Embedding → vector database search
+  \item Retrieved documents + query → LLM inference (slower, 1--10s)
+\end{enumerate}
+
+This requires \textit{two} types of inference: embedding models
+(small, fast, batch-friendly) and generation models (large, sequential).
+
+\subsection{Image Generation (Stable Diffusion, Midjourney, DALL-E)}
+
+Diffusion models have unique inference characteristics:
+\begin{itemize}
+  \item Inference requires 20--50 \textit{denoising steps}
+  \item Each step is a full forward pass through a large model
+  \item Output is a 2D image, not text tokens
+  \item Parallelism is easier (image patches can be processed in parallel)
+  \item Users tolerate 5--30 second wait times
+\end{itemize}
+
+\subsection{Real-Time Applications (Voice, AR/VR)}
+
+The frontier of inference engineering:
+\begin{itemize}
+  \item Voice assistants require end-to-end latency $<$ 300ms
+        (speech-to-text + LLM + text-to-speech pipeline)
+  \item AR/VR scene understanding needs 60+ FPS inference
+  \item These require on-device inference (edge deployment)
+\end{itemize}
+
+%% ───────────────────────────────────────────────────────────
+\section{Your First Inference System: A Practical Example}
+%% ───────────────────────────────────────────────────────────
+
+Let us make these concepts concrete with a simple but complete
+Python example.
+We will serve a language model and measure the key performance metrics.
+
+\begin{lstlisting}[style=pythonstyle,
+  caption={Simple LLM inference with performance measurement},
+  label={lst:basic-inference}]
+"""
+Chapter 1: Basic LLM Inference Example
+---------------------------------------
+This script demonstrates the fundamentals of LLM inference:
+  - Loading a model
+  - Running a forward pass (inference)
+  - Measuring latency and throughput
+  - Understanding time-to-first-token vs total generation time
+
+Run with: python basic_inference.py
+Requires: pip install transformers torch
+"""
+
+import time
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# ── Step 1: Load the model and tokeniser ──────────────────────────────
+# The tokeniser converts text to token IDs (numbers the model understands)
+# The model contains all the trained parameters (weights)
+#
+# For this example we use a small model to avoid needing large GPU memory.
+# In production, you would use GPT-4, LLaMA-3, Mistral, etc.
+
+MODEL_NAME = "gpt2"  # Small model for illustration (~117M parameters)
+
+print(f"Loading model: {MODEL_NAME}")
+tokeniser = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    torch_dtype=torch.float16,  # Use 16-bit precision (half memory of float32)
+    device_map="auto",          # Automatically place on GPU if available
+)
+model.eval()  # Set to inference mode (disables dropout, gradient tracking)
+
+print(f"Model loaded. Parameters: {sum(p.numel() for p in model.parameters()):,}")
+print(f"Device: {next(model.parameters()).device}")
+print()
+
+# ── Step 2: Define our inference function ────────────────────────────
+def run_inference(prompt: str, max_new_tokens: int = 100) -> dict:
+    """
+    Runs a single inference request and returns the result with metrics.
+
+    Returns a dict containing:
+      - output_text:    the generated text
+      - input_tokens:   number of tokens in the prompt
+      - output_tokens:  number of tokens generated
+      - ttft_ms:        time to first token (milliseconds)
+      - total_ms:       total generation time (milliseconds)
+      - tokens_per_sec: throughput (tokens/second)
+    """
+
+    # Step 2a: Tokenise the input
+    # Convert raw text → token IDs → tensor on GPU
+    inputs = tokeniser(prompt, return_tensors="pt").to(model.device)
+    input_len = inputs["input_ids"].shape[1]  # number of input tokens
+
+    # Step 2b: Record start time for TTFT measurement
+    t_start = time.perf_counter()
+
+    # Step 2c: Run inference
+    # torch.no_grad() tells PyTorch NOT to track gradients
+    # (we don't need them for inference, and they would waste memory)
+    with torch.no_grad():
+        output_ids = model.generate(
+            **inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,     # Greedy decoding (deterministic)
+            pad_token_id=tokeniser.eos_token_id,
+        )
+
+    t_end = time.perf_counter()
+
+    # Step 2d: Compute metrics
+    output_len = output_ids.shape[1] - input_len  # tokens we generated
+    total_ms = (t_end - t_start) * 1000           # total time in ms
+    tokens_per_sec = output_len / (t_end - t_start)
+
+    # Step 2e: Decode the output back to text
+    generated_tokens = output_ids[0, input_len:]  # only new tokens
+    output_text = tokeniser.decode(generated_tokens, skip_special_tokens=True)
+
+    return {
+        "output_text":    output_text,
+        "input_tokens":   input_len,
+        "output_tokens":  output_len,
+        "total_ms":       total_ms,
+        "tokens_per_sec": tokens_per_sec,
+    }
+
+
+# ── Step 3: Run some example requests ────────────────────────────────
+prompts = [
+    "Explain what artificial intelligence is in simple terms:",
+    "The key difference between training and inference in machine learning is:",
+    "A GPU is better than a CPU for deep learning because:",
+]
+
+for i, prompt in enumerate(prompts, 1):
+    print(f"{'='*60}")
+    print(f"Request {i}: {prompt[:60]}...")
+    print()
+
+    result = run_inference(prompt, max_new_tokens=80)
+
+    print(f"  Input tokens:  {result['input_tokens']}")
+    print(f"  Output tokens: {result['output_tokens']}")
+    print(f"  Total time:    {result['total_ms']:.1f} ms")
+    print(f"  Throughput:    {result['tokens_per_sec']:.1f} tokens/sec")
+    print()
+    print(f"  Generated text:")
+    print(f"  {result['output_text'][:200]}")
+    print()
+
+# ── Step 4: Batch inference comparison ───────────────────────────────
+print(f"{'='*60}")
+print("Comparing single vs batch inference:")
+print()
+
+# Run requests one-by-one
+t_sequential_start = time.perf_counter()
+for prompt in prompts:
+    run_inference(prompt, max_new_tokens=50)
+t_sequential = time.perf_counter() - t_sequential_start
+
+print(f"  Sequential (3 requests): {t_sequential*1000:.0f} ms")
+print()
+print("  Note: In production, continuous batching processes multiple")
+print("  requests simultaneously, dramatically improving throughput.")
+print("  We will cover this in Chapter 4.")
+\end{lstlisting}
+
+Running this script on an NVIDIA A100 GPU with GPT-2 produces output
+similar to:
+
+\begin{lstlisting}[style=bashstyle,
+  caption={Sample output from basic inference script}]
+Loading model: gpt2
+Model loaded. Parameters: 117,222,400
+Device: cuda:0
+
+============================================================
+Request 1: Explain what artificial intelligence is in simpl...
+
+  Input tokens:  12
+  Output tokens: 80
+  Total time:    245.3 ms
+  Throughput:    326.1 tokens/sec
+
+============================================================
+Comparing single vs batch inference:
+  Sequential (3 requests): 712 ms
+\end{lstlisting}
+
+\begin{notebox}[What to Observe]
+Notice that 80 tokens took 245ms total. This is about 3ms per token.
+On a larger model (e.g. LLaMA-3-70B), you would see:
+\begin{itemize}
+  \item Much higher memory usage (70B params $\times$ 2 bytes = 140GB)
+  \item Slower throughput (perhaps 20--50 tokens/sec per request)
+  \item Need for multi-GPU setup
+\end{itemize}
+These numbers motivate everything we will optimise in this book.
+\end{notebox}
+
+%% ───────────────────────────────────────────────────────────
+\section{Performance Measurement: The Metrics That Matter}
+%% ───────────────────────────────────────────────────────────
+
+Before we end this chapter, we need to establish a shared vocabulary
+for measuring inference system performance.
+These metrics will appear throughout every chapter of this book.
+
+\subsection{Latency Metrics}
+
+\begin{defbox}[Time to First Token (TTFT)]
+The time elapsed from when the request is received to when the
+\textit{first output token} is generated.\\[4pt]
+Formula: $\text{TTFT} = t_{\text{first\_token}} - t_{\text{request\_received}}$\\[4pt]
+Typical targets: $<200$ms for interactive applications.
+\end{defbox}
+
+\begin{defbox}[Time Per Output Token (TPOT)]
+The average time to generate each output token after the first one.
+This is the inverse of the per-request generation speed.\\[4pt]
+Formula: $\text{TPOT} = \frac{t_{\text{last\_token}} - t_{\text{first\_token}}}{N_{\text{output\_tokens}} - 1}$\\[4pt]
+Typical targets: 20--50ms/token for single-stream, lower with batching.
+\end{defbox}
+
+\begin{defbox}[End-to-End Latency]
+Total time from request submission to complete response received.\\[4pt]
+Formula: $\text{E2E Latency} = \text{TTFT} + \text{TPOT} \times (N_{\text{output\_tokens}} - 1)$\\[4pt]
+Used for SLA (Service Level Agreement) commitments.
+\end{defbox}
+
+\subsection{Throughput Metrics}
+
+\begin{defbox}[Requests Per Second (RPS)]
+How many complete inference requests the system can handle per second
+across all concurrent users.\\[4pt]
+This is the primary \textit{capacity} metric for inference systems.
+\end{defbox}
+
+\begin{defbox}[Output Tokens Per Second (TPS)]
+Total output tokens generated per second across all requests.\\[4pt]
+Formula: $\text{TPS} = \sum_{\text{requests}} \frac{N_{\text{output\_tokens}}}{t_{\text{generation}}}$\\[4pt]
+This is the primary metric for comparing inference engine efficiency.
+\end{defbox}
+
+\subsection{Efficiency Metrics}
+
+\begin{defbox}[GPU Utilisation]
+Percentage of time the GPU's compute units are actively performing
+calculations (as opposed to waiting for memory or network).\\[4pt]
+Target: $>70\%$ in production systems. Below 50\% suggests the system
+is bottlenecked by memory bandwidth or request scheduling.
+\end{defbox}
+
+\begin{defbox}[Cost Per Million Tokens (\$/MTok)]
+The operational cost to generate one million output tokens.
+Includes GPU compute, memory, networking, and power costs.\\[4pt]
+This is the primary \textit{business} metric for inference operations.
+Industry targets: \$0.10--\$5.00 per million tokens depending on
+model size and infrastructure.
+\end{defbox}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.85\textwidth, height=6cm,
+  xlabel={Concurrent Requests},
+  ylabel={Tokens per Second (System Total)},
+  title={Throughput vs.\ Concurrency for Different Serving Strategies},
+  legend pos=north west,
+  grid=both,
+  grid style={dotted, gray!40},
+  xmin=0, xmax=32,
+  ymin=0, ymax=2600,
+  xtick={0,4,8,12,16,20,24,28,32},
+  ytick={0,500,1000,1500,2000,2500},
+  axis lines=left,
+  tick align=outside,
+  legend style={font=\small},
+]
+
+% Naive serving (one at a time)
+\addplot[chaptercolor, thick, mark=square*, mark size=2pt]
+  coordinates {
+    (1,120) (2,138) (4,155) (8,162) (12,163) (16,164) (20,165) (32,164)
+  };
+\addlegendentry{Naive (sequential)};
+
+% Static batching
+\addplot[accentorange, thick, mark=triangle*, mark size=2pt]
+  coordinates {
+    (1,120) (2,230) (4,440) (8,820) (12,1100) (16,1280) (20,1350) (32,1380)
+  };
+\addlegendentry{Static batching};
+
+% Continuous batching (vLLM-style)
+\addplot[accentgreen, thick, mark=*, mark size=2pt]
+  coordinates {
+    (1,120) (2,240) (4,470) (8,900) (12,1400) (16,1800) (20,2100) (32,2450)
+  };
+\addlegendentry{Continuous batching};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Throughput scaling with concurrent requests for three serving
+strategies. Continuous batching (vLLM-style) maintains near-linear
+scaling to much higher concurrency levels. We will explain exactly
+why in Chapter 4.}
+\label{fig:throughput-vs-concurrency}
+\end{figure}
+
+%% ───────────────────────────────────────────────────────────
+\section{Production Engineering Notes}
+%% ───────────────────────────────────────────────────────────
+
+Before we close this chapter, here are some production realities
+that you will encounter as an inference engineer.
+These are lessons learned from running real systems at scale.
+
+\subsection{The Cold Start Problem}
+
+When a model is first loaded onto a GPU (or after a GPU is restarted),
+the first few requests are significantly slower because:
+\begin{itemize}
+  \item Model weights must be transferred from disk/CPU to GPU memory
+  \item CUDA kernels must be compiled and cached
+  \item Memory allocators warm up
+\end{itemize}
+
+Production systems use \term{warm-up requests} --- dummy requests sent
+at startup to initialise the system before real traffic arrives.
+
+\subsection{Memory Fragmentation}
+
+Even with sophisticated memory management, GPU memory can become
+fragmented over time --- unable to allocate large contiguous blocks
+even when there is enough total free memory.
+Production systems monitor memory fragmentation and periodically
+restart workers to clean up.
+
+\subsection{Long-Tail Latency}
+
+The average latency might be excellent (200ms) but the P99 latency
+(worst 1\% of requests) might be terrible (5 seconds).
+This happens due to:
+\begin{itemize}
+  \item Garbage collection pauses
+  \item Memory pressure causing evictions
+  \item Network jitter
+  \item Unlucky scheduling
+\end{itemize}
+
+Always monitor and design to P99, not just averages.
+
+\subsection{Model Versioning and Rollouts}
+
+Updating a model in production while maintaining availability requires
+careful blue-green deployment or canary rollouts.
+With large models (hundreds of GB), the update itself takes minutes ---
+during which the new model must be loaded without dropping service.
+
+%% ───────────────────────────────────────────────────────────
+\section{Common Mistakes in Inference Engineering}
+%% ───────────────────────────────────────────────────────────
+
+\begin{warningbox}[Mistake 1: Confusing Training Metrics with Inference Metrics]
+A model with excellent training loss does not necessarily produce
+good inference performance. Training optimises model quality.
+Inference engineering optimises system performance.
+They are separate concerns.
+\end{warningbox}
+
+\begin{warningbox}[Mistake 2: Ignoring Memory Bandwidth]
+Most inference engineers initially focus on compute (FLOPS).
+In practice, LLM inference is almost always
+\textit{memory-bandwidth-bound}, not compute-bound.
+Optimising for the wrong bottleneck wastes engineering effort.
+\end{warningbox}
+
+\begin{warningbox}[Mistake 3: Benchmarking with Unrealistic Inputs]
+Benchmarking with short prompts and single requests gives misleading
+results. Always benchmark with realistic input distributions,
+concurrency levels, and request patterns that match your actual
+production workload.
+\end{warningbox}
+
+\begin{warningbox}[Mistake 4: Under-provisioning for Peak Load]
+AI inference traffic is highly spiky --- product launches, viral
+moments, and business hours can cause $10\times$ normal traffic in
+minutes. Always provision for 2--3$\times$ expected peak, and have
+clear shedding/queueing strategies for higher load.
+\end{warningbox}
+
+%% ───────────────────────────────────────────────────────────
+\section{Best Practices}
+%% ───────────────────────────────────────────────────────────
+
+\begin{tipbox}[Best Practice 1: Measure Before Optimising]
+Before optimising anything, measure your current system's bottleneck.
+Use profiling tools (NVIDIA Nsight, PyTorch Profiler, vLLM's built-in
+metrics) to determine whether you are compute-bound, memory-bound,
+or I/O-bound. Then optimise the actual bottleneck.
+\end{tipbox}
+
+\begin{tipbox}[Best Practice 2: Use the Right Hardware]
+Not all GPUs are equal for inference.
+\begin{itemize}
+  \item For memory-bandwidth-limited workloads (most LLMs): choose
+        GPUs with highest HBM bandwidth (H100, A100)
+  \item For compute-limited workloads (diffusion models, small models):
+        choose GPUs with highest FLOPS
+  \item For cost-sensitive deployments: consider A10G, L4 --- cheaper
+        with lower throughput, acceptable for low-concurrency workloads
+\end{itemize}
+\end{tipbox}
+
+\begin{tipbox}[Best Practice 3: Monitor the Full Stack]
+Monitor metrics at every layer:
+\begin{itemize}
+  \item Application: TTFT, E2E latency, error rates
+  \item Inference engine: batch sizes, queue depth, cache hit rate
+  \item GPU: utilisation, memory usage, memory bandwidth
+  \item Infrastructure: network latency, disk I/O
+\end{itemize}
+Slow P99 latency could be caused by a problem at \textit{any} layer.
+\end{tipbox}
+
+%% ───────────────────────────────────────────────────────────
+\section{Chapter Summary}
+%% ───────────────────────────────────────────────────────────
+
+\begin{chapsummary}
+\textbf{Key concepts from Chapter 1:}
+
+\begin{itemize}
+  \item \textbf{AI Inference} is the process of running a trained model
+        on new data to produce outputs. The model parameters are fixed;
+        only the input varies.
+
+  \item \textbf{Training vs Inference} are fundamentally different:
+        training changes parameters (slow, done once);
+        inference applies fixed parameters (fast, done millions of times).
+
+  \item \textbf{The inference request lifecycle} involves: network
+        ingress, scheduling, tokenisation, prefill (parallel),
+        decode (sequential), and streaming output.
+
+  \item \textbf{The inference trilemma}: you must balance latency,
+        throughput, and cost. Optimising all three simultaneously
+        is the core challenge of the discipline.
+
+  \item \textbf{Hardware matters}: GPUs dominate because neural networks
+        are fundamentally massive parallel matrix operations.
+        Memory bandwidth --- not raw compute --- is the primary
+        bottleneck for most LLM inference.
+
+  \item \textbf{Modern inference engines} (vLLM, TensorRT-LLM, TGI)
+        provide production-grade features: continuous batching,
+        KV caching, quantisation, and tensor parallelism.
+
+  \item \textbf{Key metrics}: TTFT, TPOT, E2E latency, tokens per
+        second, GPU utilisation, and \$/MTok.
+\end{itemize}
+
+\vspace{6pt}
+In the next chapter, we will go deep on the transformer architecture ---
+understanding exactly \textit{what} the GPU is computing during inference
+and \textit{why} the model is structured the way it is.
+\end{chapsummary}
+
+%% ───────────────────────────────────────────────────────────
+\section{Exercises}
+%% ───────────────────────────────────────────────────────────
+
+\begin{exercise}[Measuring Inference Metrics]
+Run the code example from Listing~\ref{lst:basic-inference} with GPT-2.
+Then modify it to:
+\begin{enumerate}
+  \item Measure the time for just the tokenisation step vs the model
+        forward pass.
+  \item Plot throughput (tokens/sec) as a function of output sequence
+        length (try 10, 50, 100, 200, 500 tokens).
+  \item Calculate the cost estimate: assume the machine costs
+        \$3/hour to run. What is your \$/MTok?
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Understanding the Memory Constraint]
+GPT-3 has 175 billion parameters.
+\begin{enumerate}
+  \item If stored in FP32 (4 bytes per parameter), how many GB of
+        memory does it require?
+  \item In FP16 (2 bytes per parameter)?
+  \item In INT8 (1 byte per parameter)?
+  \item An H100 GPU has 80GB of VRAM. How many H100s would you
+        need to hold GPT-3 in FP16?
+  \item Research online: how many GPUs does OpenAI reportedly use
+        to serve GPT-3/GPT-4? Does this match your calculation?
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[The Trilemma in Practice]
+Consider three hypothetical AI serving systems, each optimising for
+a different corner of the latency--throughput--cost trilemma:
+\begin{enumerate}
+  \item A real-time voice assistant (optimise for?)
+  \item A batch document processing pipeline running nightly
+        (optimise for?)
+  \item A startup API offering cheap LLM access
+        (optimise for?)
+\end{enumerate}
+For each, identify which metric is \textit{most} and \textit{least}
+important, and describe one concrete engineering decision they would
+make differently.
+\end{exercise}
+
+\begin{exercise}[Architecture Exploration]
+Draw (on paper or digitally) the full request lifecycle diagram
+from Figure~\ref{fig:request-lifecycle} from memory. Then:
+\begin{enumerate}
+  \item Identify which stage you think takes the longest. Why?
+  \item Identify which stage is hardest to scale horizontally. Why?
+  \item If you needed to reduce TTFT by 50\%, which stage would
+        you focus on?
+\end{enumerate}
+\end{exercise}
+
+%% ───────────────────────────────────────────────────────────
+\section{Further Reading}
+%% ───────────────────────────────────────────────────────────
+
+\begin{furtherreading}
+\textbf{Foundational Papers}
+\begin{itemize}
+  \item Vaswani et al.\ (2017). \textit{Attention Is All You Need}.
+        The original transformer paper. Understanding this is
+        prerequisites for Chapter 2.
+  \item Kwon et al.\ (2023). \textit{Efficient Memory Management for
+        Large Language Model Serving with PagedAttention}.
+        The paper that introduced vLLM's core innovation.
+  \item Pope et al.\ (2022). \textit{Efficiently Scaling Transformer
+        Inference}. Google's analysis of LLM inference bottlenecks.
+\end{itemize}
+
+\textbf{Engineering Resources}
+\begin{itemize}
+  \item vLLM documentation: \url{https://docs.vllm.ai}
+  \item NVIDIA TensorRT-LLM: \url{https://github.com/NVIDIA/TensorRT-LLM}
+  \item Hugging Face TGI: \url{https://github.com/huggingface/text-generation-inference}
+  \item Andrej Karpathy's ``LLM in 100 lines'' --- builds intuition
+        for the transformer forward pass.
+\end{itemize}
+
+\textbf{Background Reading}
+\begin{itemize}
+  \item Dettmers et al.\ (2022). \textit{LLM.int8(): 8-bit Matrix
+        Multiplication for Transformers at Scale}.
+        Introduction to quantisation (Chapter 6 preview).
+  \item Orca paper (Yu et al., 2022). \textit{Orca: A Distributed
+        Serving System for Transformer-Based Language Generation Models}.
+        Introduced continuous batching.
+  \item Leviathan et al.\ (2023). \textit{Fast Inference from
+        Transformers via Speculative Decoding}.
+        A clever technique we will cover in Chapter 7.
+\end{itemize}
+
+\textbf{Online Resources}
+\begin{itemize}
+  \item \url{https://modal.com/blog} --- excellent practical articles
+        on LLM serving
+  \item \url{https://www.anyscale.com/blog} --- Ray Serve and LLM
+        infrastructure deep dives
+  \item MLCommons MLPerf Inference benchmarks ---
+        \url{https://mlcommons.org/benchmarks/inference-datacenter/}
+\end{itemize}
+\end{furtherreading}
+
+%% ── Chapter end ornament ───────────────────────────────────
+\vfill
+\begin{center}
+\begin{tikzpicture}
+  \draw[chaptercolor!40, thick] (0,0) -- (4,0);
+  \fill[chaptercolor!60] (2,0) circle (3pt);
+  \draw[chaptercolor!40, thick] (4,0) -- (8,0);
+\end{tikzpicture}
+
+\vspace{6pt}
+{\small\itshape\color{gray}
+End of Chapter 1 $\cdot$
+\textit{Next: Chapter 2 --- The Transformer Architecture: What the GPU Is Actually Computing}
+}
+\end{center}
+
+\end{document}
