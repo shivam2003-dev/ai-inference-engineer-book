@@ -116,9 +116,7 @@
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
-  numberstyle=\scriptsize\color{MidGray},
-  numbers=left,
-  numbersep=10pt,
+  numbers=none,
   stepnumber=1,
   breaklines=true,
   breakatwhitespace=true,
@@ -147,9 +145,7 @@
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
-  numbers=left,
-  numberstyle=\scriptsize\color{MidGray},
-  numbersep=10pt,
+  numbers=none,
   breaklines=true,
   breakatwhitespace=true,
   frame=single,
@@ -174,9 +170,7 @@
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
-  numbers=left,
-  numberstyle=\scriptsize\color{MidGray},
-  numbersep=10pt,
+  numbers=none,
   breaklines=true,
   breakatwhitespace=true,
   frame=single,
@@ -201,9 +195,7 @@
   keywordstyle=\color{KeywordColor}\bfseries,
   commentstyle=\color{CommentColor}\itshape,
   stringstyle=\color{StringColor},
-  numbers=left,
-  numberstyle=\scriptsize\color{MidGray},
-  numbersep=10pt,
+  numbers=none,
   breaklines=true,
   breakatwhitespace=true,
   frame=single,
@@ -2524,58 +2516,34 @@ latency.
 
 \section*{Essential CUDA API}
 
-\noindent\textbf{CUDA Cheat Sheet (Quick Reference)}
+\begin{longtable}{@{}p{3.8cm}p{4.8cm}p{4.5cm}@{}}
+  \toprule
+  \textbf{Task} & \textbf{API} & \textbf{Notes} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Task} & \textbf{API} & \textbf{Notes} \\
+  \midrule
+  \endhead
+  Allocate device memory & \code{cudaMalloc}, \code{cudaMallocAsync} & Use async variants with streams to reduce stalls. \\
+  Free device memory & \code{cudaFree}, \code{cudaFreeAsync} & Always free in reverse ownership order to simplify debugging. \\
+  Host/device transfer & \code{cudaMemcpy}, \code{cudaMemcpyAsync} & Minimize transfers; keep tensors on GPU between kernels. \\
+  Launch kernels & \code{kernel<<<grid, block, shmem, stream>>>} & Start with 256 threads/block for most inference kernels. \\
+  Thread indexing & \code{blockIdx}, \code{threadIdx}, \code{blockDim} & Global index in 1D: \code{idx = blockIdx.x * blockDim.x + threadIdx.x}. \\
+  Synchronization & \code{cudaDeviceSynchronize}, \code{cudaStreamSynchronize}, \code{\_\_syncthreads()} & Prefer stream sync over device-wide sync in production. \\
+  Error handling & \code{cudaGetLastError}, \code{cudaGetErrorString} & Wrap all CUDA calls in a check macro. \\
+  Device query & \code{cudaGetDeviceProperties} & Read SM count, shared memory, max threads/block before tuning. \\
+  \bottomrule
+\end{longtable}
 
-\begin{verbatim}
-/* -- Memory ---------------------------------------------- */
-cudaMalloc(&ptr, bytes);             // Allocate GPU memory
-cudaFree(ptr);                       // Free GPU memory
-cudaMemcpy(dst, src, bytes, kind);   // Transfer: kind =
-  // cudaMemcpyHostToDevice | cudaMemcpyDeviceToHost | DeviceToDevice
-cudaMemset(ptr, value, bytes);       // Fill GPU memory
-
-/* -- Async memory (for overlap with compute) ------------ */
-cudaMallocAsync(&ptr, bytes, stream);
-cudaFreeAsync(ptr, stream);
-cudaMemcpyAsync(dst, src, bytes, kind, stream);
-
-/* -- Kernel launch -------------------------------------- */
-kernel<<<grid, block, shared_mem, stream>>>(args...);
-// grid  = dim3(gridX, gridY, gridZ)
-// block = dim3(blockX, blockY, blockZ)
-// max threads per block: 1024
-
-/* -- Thread indexing inside kernel ---------------------- */
-int idx = blockIdx.x * blockDim.x + threadIdx.x;
-int idy = blockIdx.y * blockDim.y + threadIdx.y;
-
-/* -- Synchronization ------------------------------------ */
-cudaDeviceSynchronize();             // Wait for ALL GPU work
-cudaStreamSynchronize(stream);       // Wait for one stream
-__syncthreads();                     // Sync threads within block (in kernel)
-
-/* -- Error checking (always do this!) ------------------- */
-#define CUDA_CHECK(call) { \
-    cudaError_t err = call; \
-    if (err != cudaSuccess) { \
-        fprintf(stderr, "CUDA error: %s at %s:%d\n", \
-                cudaGetErrorString(err), __FILE__, __LINE__); \
-        exit(1); \
-    } \
-}
-CUDA_CHECK(cudaMalloc(&ptr, bytes));
-
-/* -- Streams -------------------------------------------- */
-cudaStream_t stream;
-cudaStreamCreate(&stream);
-cudaStreamDestroy(stream);
-
-/* -- Device query --------------------------------------- */
-cudaDeviceProp prop;
-cudaGetDeviceProperties(&prop, device_id);
-// prop.name, prop.totalGlobalMem, prop.multiProcessorCount
-// prop.maxThreadsPerBlock, prop.sharedMemPerBlock
-\end{verbatim}
+\section*{Minimal Kernel Checklist}
+\begin{itemize}
+  \item Validate bounds: every kernel should guard out-of-range threads.
+  \item Use contiguous memory access patterns for coalescing.
+  \item Reuse data in shared memory when read multiple times.
+  \item Avoid warp divergence in hot paths.
+  \item Profile before optimizing; trust metrics, not intuition.
+\end{itemize}
 
 \section*{Performance Rules of Thumb}
 
@@ -2593,170 +2561,80 @@ cudaGetDeviceProperties(&prop, device_id);
 \label{app:linux}
 % ============================================================
 
-\begin{lstlisting}[style=bashstyle, caption={Essential Linux commands for AI engineers}]
-# ── GPU monitoring ──────────────────────────────────────────
-nvidia-smi                          # GPU status (util, mem, temp)
-nvidia-smi dmon -s u                # Live utilization every 1s
-nvidia-smi --query-gpu=name,memory.total,memory.free \
-    --format=csv                    # GPU memory info
-watch -n 1 nvidia-smi              # Auto-refresh every 1s
-nvtop                               # Interactive GPU monitor
+\section*{Essential Linux Command Map}
 
-# ── Process management ──────────────────────────────────────
-htop                                # Interactive process viewer
-ps aux | grep python               # Find Python processes
-kill -9 <pid>                       # Force kill process
-nohup python server.py &           # Run in background
-
-# ── Disk and memory ─────────────────────────────────────────
-df -h                               # Disk space
-du -sh /models/*                   # Model directory sizes
-free -h                             # RAM usage
-cat /proc/meminfo | grep HugePages # Huge pages (for pinned memory)
-
-# ── Network ─────────────────────────────────────────────────
-ss -tlnp | grep 8000               # Check if port 8000 is open
-curl http://localhost:8000/health   # Test health endpoint
-curl http://localhost:8000/v1/models # List loaded models
-
-# ── Benchmarking ────────────────────────────────────────────
-# Time a command
-time python inference_benchmark.py
-
-# Test vLLM throughput
-python -m vllm.entrypoints.benchmark_throughput \
-    --model meta-llama/Llama-3-8b-instruct \
-    --input-len 512 --output-len 128 \
-    --num-prompts 1000
-
-# ── Environment ─────────────────────────────────────────────
-echo $CUDA_VISIBLE_DEVICES         # Which GPUs are visible?
-export CUDA_VISIBLE_DEVICES=0,1    # Restrict to GPU 0 and 1
-env | grep CUDA                    # All CUDA env variables
-
-# ── Docker/Container ────────────────────────────────────────
-docker run --gpus all \            # Use all GPUs in container
-    -p 8000:8000 \
-    my-vllm-image
-
-# ── Tmux for long-running jobs ──────────────────────────────
-tmux new -s inference              # New session named "inference"
-tmux attach -t inference           # Reattach to session
-# Ctrl+b, d to detach (session keeps running)
-\end{lstlisting}
+\begin{longtable}{@{}p{3.6cm}p{5.6cm}p{3.9cm}@{}}
+  \toprule
+  \textbf{Goal} & \textbf{Recommended Command} & \textbf{Why It Matters} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Goal} & \textbf{Recommended Command} & \textbf{Why It Matters} \\
+  \midrule
+  \endhead
+  Check GPU health & \code{nvidia-smi} & Fast snapshot of util, memory, thermals. \\
+  Watch GPU over time & \code{nvidia-smi dmon -s u} or \code{nvtop} & Detect bursts and stalls that averages hide. \\
+  Inspect model disk size & \code{du -sh /models/*} & Prevent slowdowns from disk pressure. \\
+  Check free memory & \code{free -h} & Spot host-memory pressure before OOM. \\
+  Verify API port & \code{ss -tlnp | grep 8000} & Confirms serving process is bound and reachable. \\
+  Validate health endpoint & \code{curl http://localhost:8000/health} & Quick liveness check for probes and load balancers. \\
+  List loaded models & \code{curl http://localhost:8000/v1/models} & Verifies runtime model registration. \\
+  Benchmark quickly & \code{time python inference\_benchmark.py} & Baseline latency and throughput before tuning. \\
+  Control visible GPUs & \code{CUDA\_VISIBLE\_DEVICES=0,1} & Isolate workloads and avoid noisy neighbors. \\
+  Keep jobs alive & \code{tmux new -s inference} & Run long jobs safely over unstable sessions. \\
+  \bottomrule
+\end{longtable}
 
 % ============================================================
 \chapter{Benchmarking Toolkit}
 \label{app:benchmark}
 % ============================================================
 
-\begin{lstlisting}[language=Python, caption={Comprehensive inference benchmarking script}]
-"""
-AI Inference Benchmarking Toolkit
-Measures: TTFT, TPOT, throughput, memory usage
-"""
-import time
-import asyncio
-import aiohttp
-import statistics
-import json
-from dataclasses import dataclass, field
-from typing import List
+\section*{Benchmark Design Template}
 
-@dataclass
-class BenchmarkResult:
-    ttft_ms: List[float] = field(default_factory=list)
-    tpot_ms: List[float] = field(default_factory=list)
-    total_tokens: List[int] = field(default_factory=list)
-    errors: int = 0
+\begin{longtable}{@{}p{3.8cm}p{3.5cm}p{5.8cm}@{}}
+  \toprule
+  \textbf{Category} & \textbf{Field} & \textbf{Recommended Default} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Category} & \textbf{Field} & \textbf{Recommended Default} \\
+  \midrule
+  \endhead
+  Endpoint & URL & \code{http://localhost:8000/v1/chat/completions} \\
+  Traffic shape & Concurrent users & 20 (start), then sweep 1, 5, 10, 20, 50 \\
+  Workload & Input length & 512 prompt tokens (plus a long-prompt run at 4K) \\
+  Workload & Output length & 128 and 512 token profiles \\
+  Sampling & Temperature & 0.0 for deterministic latency comparisons \\
+  Duration & Requests per run & Minimum 200 requests per configuration \\
+  Warmup & Warmup requests & 20 warmup calls before timing \\
+  Observability & Metrics captured & TTFT p50/p95/p99, TPOT p50/p95, tok/s, error rate \\
+  Stability & Retry policy & Retry once on timeout, log all failures \\
+  \bottomrule
+\end{longtable}
 
-    def summary(self):
-        return {
-            "TTFT_p50_ms":  statistics.median(self.ttft_ms),
-            "TTFT_p95_ms":  statistics.quantiles(self.ttft_ms, n=20)[18],
-            "TTFT_p99_ms":  statistics.quantiles(self.ttft_ms, n=100)[98],
-            "TPOT_p50_ms":  statistics.median(self.tpot_ms),
-            "TPOT_p95_ms":  statistics.quantiles(self.tpot_ms, n=20)[18],
-            "throughput_tok_s": sum(self.total_tokens) /
-                               (max(self.ttft_ms) / 1000 +
-                                sum(self.tpot_ms)/1000),
-            "errors": self.errors,
-        }
+\section*{Core Metrics}
 
-async def benchmark_request(
-    session: aiohttp.ClientSession,
-    url: str,
-    prompt: str,
-    max_tokens: int,
-    result: BenchmarkResult
-):
-    payload = {
-        "model": "your-model",
-        "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": max_tokens,
-        "stream": True
-    }
-    start = time.perf_counter()
-    first_token_time = None
-    token_count = 0
+\[
+\text{TTFT} = t_{\text{first token}} - t_{\text{request start}}
+\]
 
-    try:
-        async with session.post(f"{url}/v1/chat/completions",
-                                json=payload) as resp:
-            async for line in resp.content:
-                line = line.decode().strip()
-                if line.startswith("data: ") and line != "data: [DONE]":
-                    chunk = json.loads(line[6:])
-                    delta = chunk["choices"][0]["delta"]
-                    if delta.get("content"):
-                        if first_token_time is None:
-                            first_token_time = time.perf_counter()
-                            result.ttft_ms.append(
-                                (first_token_time - start) * 1000)
-                        token_count += 1
+\[
+\text{TPOT} = \frac{t_{\text{last token}} - t_{\text{first token}}}{N_{\text{output}} - 1}
+\]
 
-        if token_count > 1:
-            elapsed = time.perf_counter() - first_token_time
-            result.tpot_ms.append(elapsed * 1000 / (token_count - 1))
-        result.total_tokens.append(token_count)
-    except Exception as e:
-        result.errors += 1
-        print(f"Error: {e}")
+\[
+\text{Throughput (tok/s)} = \frac{\sum N_{\text{output}}}{\text{total wall time (s)}}
+\]
 
-async def run_benchmark(
-    url: str = "http://localhost:8000",
-    concurrent_users: int = 10,
-    num_requests: int = 100,
-    prompt: str = "Write a 200-word essay about GPU architecture.",
-    max_tokens: int = 300
-):
-    result = BenchmarkResult()
-    connector = aiohttp.TCPConnector(limit=concurrent_users * 2)
-
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [
-            benchmark_request(session, url, prompt, max_tokens, result)
-            for _ in range(num_requests)
-        ]
-        # Run with limited concurrency
-        semaphore = asyncio.Semaphore(concurrent_users)
-        async def bounded_task(t):
-            async with semaphore:
-                await t
-        await asyncio.gather(*[bounded_task(t) for t in tasks])
-
-    print("\n=== Benchmark Results ===")
-    for k, v in result.summary().items():
-        print(f"  {k:25s}: {v:.2f}" if isinstance(v, float) else
-              f"  {k:25s}: {v}")
-
-if __name__ == "__main__":
-    asyncio.run(run_benchmark(
-        url="http://localhost:8000",
-        concurrent_users=20,
-        num_requests=200,
-    ))
-\end{lstlisting}
+\section*{Runbook}
+\begin{enumerate}
+  \item Warm up the runtime and model weights.
+  \item Execute fixed-shape tests (same prompt and output length).
+  \item Sweep concurrency and collect percentile metrics.
+  \item Repeat each configuration at least 3 times.
+  \item Report median of runs and attach p95/p99 tails.
+\end{enumerate}
 
 % ============================================================
 \chapter{GPU Profiling Tools}
@@ -2765,55 +2643,40 @@ if __name__ == "__main__":
 
 \section*{Profiling Workflow}
 
-\noindent\textbf{Full GPU Profiling Workflow}
+\begin{longtable}{@{}p{1.1cm}p{3.2cm}p{4.8cm}p{4.2cm}@{}}
+  \toprule
+  \textbf{Step} & \textbf{Focus} & \textbf{Primary Tool / Command} & \textbf{What to Look For} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Step} & \textbf{Focus} & \textbf{Primary Tool / Command} & \textbf{What to Look For} \\
+  \midrule
+  \endhead
+  1 & Health snapshot & \code{nvidia-smi} & GPU utilization, memory usage, temperature, and power draw. \\
+  2 & Timeline bottlenecks & \code{nsys profile --trace=cuda,nvtx,osrt,cudnn,cublas --sample=cpu --output=my\_profile python my\_inference.py} & Idle gaps between kernels, heavy memcpy phases, weak CPU/GPU overlap. \\
+  3 & Kernel deep dive & \code{ncu --set full --kernel-name cutlass --launch-skip 10 --launch-count 3 -o kernel\_analysis python run\_matmul.py} & SM active cycles, memory throughput, L2 hit rate, warp stalls. \\
+  4 & Efficiency score & MFU estimation & Compare achieved FLOP/s against hardware peak to separate compute-limit vs IO-limit behavior. \\
+  5 & KV cache behavior & \code{curl http://localhost:8000/metrics | grep cache} & \code{vllm:gpu\_cache\_usage\_perc} below 90\%, hit rate trending upward. \\
+  \bottomrule
+\end{longtable}
 
-\begin{verbatim}
-# -- Step 1: Quick health check ------------------------------
-nvidia-smi
-# Look for: GPU util%, memory used, temperature, power draw
+\section*{Profiling Interpretation Playbook}
 
-# -- Step 2: Find the bottleneck with nsys -------------------
-nsys profile \
-    --trace=cuda,nvtx,osrt,cudnn,cublas \
-    --sample=cpu \
-    --output=my_profile \
-    python my_inference.py
+\begin{itemize}
+  \item If GPU utilization is low and queue depth is low: increase effective batch size.
+  \item If TTFT spikes but TPOT is stable: investigate prefill pressure and scheduler fairness.
+  \item If TPOT rises with long prompts: decode is likely memory-bound; test quantization or shorter max output.
+  \item If memory is consistently above 95\%: reduce sequence length, lower max concurrent sequences, or add GPUs.
+  \item If throughput is flat while latency worsens: you are saturation-limited; scale horizontally.
+\end{itemize}
 
-# Open GUI
-nsys-ui my_profile.nsys-rep
-# KEY QUESTIONS:
-# - Are there gaps between kernels? (CPU-bound, batching issue)
-# - Is cudaMemcpy dominating? (unnecessary H2D/D2H transfers)
-# - Are kernels short? (need to increase batch size)
+\section*{MFU Reference}
 
-# -- Step 3: Deep kernel analysis with ncu -------------------
-# WARNING: ncu is slow. Use on small workloads only.
-ncu --set full \
-    --kernel-name "cutlass" \    # Target specific kernel
-    --launch-skip 10 \           # Skip first 10 launches (warmup)
-    --launch-count 3 \           # Profile 3 launches
-    -o kernel_analysis \
-    python run_matmul.py
+\[
+\text{MFU} = \frac{\text{achieved FLOP/s}}{\text{peak FLOP/s}}
+\]
 
-ncu-ui kernel_analysis.ncu-rep
-# KEY METRICS:
-# - Memory Throughput: are we hitting bandwidth ceiling?
-# - SM Active Cycles %: is compute busy?
-# - L2 Hit Rate: are we reusing data?
-# - Warp Stall Reasons: what's blocking warps?
-
-# -- Step 4: MFU (Model FLOP Utilization) --------------------
-# MFU = actual FLOP/s / peak FLOP/s
-# H100 peak FP16: 989 TFLOP/s
-# Good MFU for inference: >30% (memory-bound, expected to be low)
-# Good MFU for large batches: >50%
-
-# -- Step 5: Memory analysis ---------------------------------
-# Check for memory fragmentation
-curl http://localhost:8000/metrics | grep cache
-# vllm:gpu_cache_usage_perc  -> should be <90%
-# vllm:gpu_cache_hit_rate    -> higher is better (prefix caching)
-\end{verbatim}
+\noindent Practical rule: for inference, MFU above 30\% is generally healthy for memory-heavy decode; compute-heavy prefill can exceed 50\% when tuned.
 
 \section*{Interpreting Common Profiling Issues}
 
