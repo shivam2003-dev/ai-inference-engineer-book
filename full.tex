@@ -1,0 +1,2904 @@
+% ============================================================
+%  AI INFERENCE ENGINEERING
+%  Building Fast, Scalable, and Production-Ready AI Systems
+%  Full Book — LaTeX Source
+%  Updated: May 2026 — covering H100/Blackwell, vLLM, TRT-LLM
+% ============================================================
+
+\documentclass[11pt, twoside, openright]{book}
+
+% ─── Page geometry ───────────────────────────────────────────
+\usepackage[
+  paperwidth=7.5in, paperheight=9.25in,
+  top=1in, bottom=1in,
+  inner=1.1in, outer=0.85in,
+  includeheadfoot
+]{geometry}
+
+% ─── Core packages ───────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{imakeidx}        % index
+\usepackage{mdframed}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable, listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit,
+                decorations.pathreplacing, calc, backgrounds}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{emptypage}
+
+% ─── Hyperref setup ──────────────────────────────────────────
+\hypersetup{
+  colorlinks  = true,
+  linkcolor   = NavyBlue,
+  citecolor   = NavyBlue,
+  urlcolor    = DarkBlue,
+  pdftitle    = {AI Inference Engineering},
+  pdfauthor   = {AI Inference Engineering Book},
+  pdfsubject  = {AI Systems, GPU Programming, Production ML},
+  bookmarksnumbered = true,
+  bookmarksopen     = true
+}
+
+% ─── Colors ──────────────────────────────────────────────────
+\definecolor{NavyBlue}{RGB}{0, 51, 102}
+\definecolor{DarkBlue}{RGB}{0, 70, 140}
+\definecolor{AccentOrange}{RGB}{220, 90, 0}
+\definecolor{AccentGreen}{RGB}{0, 128, 64}
+\definecolor{LightGray}{RGB}{245, 245, 245}
+\definecolor{MidGray}{RGB}{130, 130, 130}
+\definecolor{DarkGray}{RGB}{50, 50, 50}
+\definecolor{CodeBg}{RGB}{248, 248, 252}
+\definecolor{CodeBorder}{RGB}{180, 190, 220}
+\definecolor{TipBg}{RGB}{230, 245, 230}
+\definecolor{TipBorder}{RGB}{0, 150, 60}
+\definecolor{WarnBg}{RGB}{255, 245, 220}
+\definecolor{WarnBorder}{RGB}{200, 130, 0}
+\definecolor{NoteBg}{RGB}{225, 235, 255}
+\definecolor{NoteBorder}{RGB}{60, 100, 200}
+\definecolor{KeywordColor}{RGB}{0, 0, 180}
+\definecolor{CommentColor}{RGB}{100, 120, 100}
+\definecolor{StringColor}{RGB}{160, 40, 0}
+\definecolor{NumberColor}{RGB}{140, 0, 140}
+
+% ─── Index ───────────────────────────────────────────────────
+\makeindex[columns=2, title=Index, intoc]
+
+% ─── Chapter title style ─────────────────────────────────────
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{NavyBlue}}
+  {\small\color{MidGray}\MakeUppercase{\chaptertitlename}\ \thechapter}
+  {0.5em}
+  {\huge}
+  [\vspace{0.3em}{\color{AccentOrange}\titlerule[2pt]}]
+
+\titlespacing*{\chapter}{0pt}{-10pt}{30pt}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{NavyBlue}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{DarkGray}}
+  {\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{DarkGray}}
+  {\thesubsubsection}{1em}{}
+
+% ─── Headers/Footers ─────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\color{MidGray}\textit{\leftmark}}
+\fancyhead[RO]{\small\color{MidGray}\textit{\rightmark}}
+\fancyfoot[LE,RO]{\small\color{MidGray}\thepage}
+\fancyfoot[LO,RE]{\small\color{MidGray}\textit{AI Inference Engineering}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ─── Listings (code) style ───────────────────────────────────
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  backgroundcolor=\color{CodeBg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{KeywordColor}\bfseries,
+  commentstyle=\color{CommentColor}\itshape,
+  stringstyle=\color{StringColor},
+  numberstyle=\tiny\color{MidGray},
+  numbers=left,
+  numbersep=8pt,
+  stepnumber=1,
+  breaklines=true,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{CodeBorder},
+  tabsize=4,
+  captionpos=b,
+  morekeywords={import,from,as,def,class,return,yield,async,await,
+                with,pass,raise,True,False,None},
+}
+
+\lstdefinestyle{bashstyle}{
+  language=bash,
+  backgroundcolor=\color{LightGray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{KeywordColor}\bfseries,
+  commentstyle=\color{CommentColor}\itshape,
+  stringstyle=\color{StringColor},
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{CodeBorder},
+  showstringspaces=false,
+  tabsize=2,
+}
+
+\lstdefinestyle{cstyle}{
+  language=C,
+  backgroundcolor=\color{CodeBg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{KeywordColor}\bfseries,
+  commentstyle=\color{CommentColor}\itshape,
+  stringstyle=\color{StringColor},
+  numbers=left,
+  numberstyle=\tiny\color{MidGray},
+  numbersep=8pt,
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{CodeBorder},
+  showstringspaces=false,
+  tabsize=4,
+}
+
+\lstdefinestyle{yamlstyle}{
+  language=,
+  backgroundcolor=\color{LightGray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{KeywordColor}\bfseries,
+  commentstyle=\color{CommentColor}\itshape,
+  stringstyle=\color{StringColor},
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{CodeBorder},
+  showstringspaces=false,
+}
+
+\lstset{style=pythonstyle}
+
+% ─── Custom boxes ────────────────────────────────────────────
+\tcbset{
+  notestyle/.style={
+    enhanced, breakable,
+    colback=NoteBg, colframe=NoteBorder,
+    boxrule=1pt, arc=3pt,
+    fonttitle=\bfseries\small\color{white},
+    coltitle=white,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=NoteBorder, arc=2pt},
+  },
+  tipstyle/.style={
+    enhanced, breakable,
+    colback=TipBg, colframe=TipBorder,
+    boxrule=1pt, arc=3pt,
+    fonttitle=\bfseries\small,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=TipBorder, coltext=white, arc=2pt},
+  },
+  warnstyle/.style={
+    enhanced, breakable,
+    colback=WarnBg, colframe=WarnBorder,
+    boxrule=1pt, arc=3pt,
+    fonttitle=\bfseries\small,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=WarnBorder, coltext=white, arc=2pt},
+  },
+  analogystyle/.style={
+    enhanced, breakable,
+    colback={rgb,255:red,250;green,240;blue,255},
+    colframe={rgb,255:red,120;green,80;blue,180},
+    boxrule=1pt, arc=4pt,
+    fonttitle=\bfseries\small\itshape,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={
+      colback={rgb,255:red,120;green,80;blue,180},
+      coltext=white, arc=2pt},
+  },
+}
+
+\newcommand{\notebox}[2]{\begin{tcolorbox}[notestyle, title={#1}]#2\end{tcolorbox}}
+\newcommand{\tipbox}[2]{\begin{tcolorbox}[tipstyle, title={#1}]#2\end{tcolorbox}}
+\newcommand{\warnbox}[2]{\begin{tcolorbox}[warnstyle, title={#1}]#2\end{tcolorbox}}
+\newcommand{\analogybox}[2]{\begin{tcolorbox}[analogystyle, title={Analogy: #1}]#2\end{tcolorbox}}
+
+% ─── Learning objectives box ─────────────────────────────────
+\newenvironment{learningobjectives}
+  {\begin{tcolorbox}[enhanced, breakable,
+    colback={rgb,255:red,232;green,240;blue,255},
+    colframe=NavyBlue, boxrule=1.5pt, arc=4pt,
+    title={\bfseries Learning Objectives},
+    fonttitle=\bfseries\color{white},
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=NavyBlue, arc=2pt}]
+  \begin{itemize}[leftmargin=1.5em, itemsep=2pt]}
+  {\end{itemize}\end{tcolorbox}}
+
+% ─── Summary box ─────────────────────────────────────────────
+\newenvironment{chapsummary}
+  {\begin{tcolorbox}[enhanced, breakable,
+    colback={rgb,255:red,245;green,245;blue,225},
+    colframe=AccentOrange, boxrule=1.5pt, arc=4pt,
+    title={\bfseries Chapter Summary},
+    fonttitle=\bfseries\color{white},
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=AccentOrange, arc=2pt}]}
+  {\end{tcolorbox}}
+
+% ─── Exercise box ─────────────────────────────────────────────
+\newcounter{exercise}[chapter]
+\newenvironment{exercise}[1][]
+  {\refstepcounter{exercise}
+   \begin{tcolorbox}[enhanced, breakable,
+    colback={rgb,255:red,248;green,248;blue,248},
+    colframe=DarkGray, boxrule=0.8pt, arc=3pt,
+    title={\bfseries Exercise \thechapter.\theexercise\ifx&#1&\else: #1\fi},
+    fonttitle=\bfseries\small,
+    attach boxed title to top left={yshift=-2mm, xshift=5mm},
+    boxed title style={colback=DarkGray, coltext=white, arc=2pt}]}
+  {\end{tcolorbox}}
+
+% ─── Key term ────────────────────────────────────────────────
+\newcommand{\keyterm}[1]{\textbf{\color{AccentOrange}#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% ─── Part title style ────────────────────────────────────────
+\titleformat{\part}[display]
+  {\normalfont\Huge\bfseries\centering\color{NavyBlue}}
+  {\color{AccentOrange}\MakeUppercase{Part}\ \thepart}
+  {1em}
+  {}
+
+% ─── Misc ────────────────────────────────────────────────────
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{1.5em}
+\captionsetup{font=small, labelfont={bf,color=NavyBlue}}
+
+% ============================================================
+%  DOCUMENT START
+% ============================================================
+\begin{document}
+
+% ─── Half-title ─────────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{4cm}
+\begin{center}
+  {\Huge\bfseries\color{NavyBlue} AI Inference Engineering}\\[0.6em]
+  {\Large\color{AccentOrange} Building Fast, Scalable, and\\[0.2em]
+   Production-Ready AI Systems}
+\end{center}
+\clearpage
+
+% ─── Title page ─────────────────────────────────────────────
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[NavyBlue] (current page.north west) rectangle
+    ([yshift=-5cm]current page.north east);
+  \node[anchor=north, text=white, font=\LARGE\bfseries, inner sep=0pt]
+    at ([yshift=-1.5cm]current page.north) {AI Inference Engineering};
+  \node[anchor=north, text=AccentOrange, font=\large, inner sep=0pt]
+    at ([yshift=-2.8cm]current page.north)
+    {Building Fast, Scalable, and Production-Ready AI Systems};
+\end{tikzpicture}
+
+\vspace*{5.5cm}
+
+\begin{center}
+  \begin{tikzpicture}[scale=0.9]
+    % Simple GPU chip diagram
+    \draw[fill=NavyBlue!10, draw=NavyBlue, line width=2pt, rounded corners=6pt]
+      (0,0) rectangle (8,5);
+    \foreach \x in {0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5}
+      \foreach \y in {0.5,1.5,2.5,3.5,4.5}
+        \draw[fill=NavyBlue!60, draw=NavyBlue, rounded corners=2pt]
+          (\x-0.38,\y-0.38) rectangle (\x+0.38,\y+0.38);
+    \node[text=white, font=\large\bfseries] at (4,2.5) {GPU};
+    % arrows into GPU
+    \draw[-{Stealth[length=6pt]}, AccentOrange, line width=2pt]
+      (-1.5,2.5) -- (0,2.5) node[midway,above,font=\small,color=AccentOrange]
+      {Requests};
+    \draw[-{Stealth[length=6pt]}, AccentGreen, line width=2pt]
+      (8,2.5) -- (9.5,2.5) node[midway,above,font=\small,color=AccentGreen]
+      {Tokens};
+  \end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+  {\Large\color{NavyBlue} From First Principles to Production Systems}\\[1em]
+  {\normalsize\color{MidGray}
+   Covers: GPU Architecture $\cdot$ CUDA $\cdot$ Transformers $\cdot$ KV Cache $\cdot$
+   Quantization\\
+   vLLM $\cdot$ TensorRT-LLM $\cdot$ SGLang $\cdot$ Speculative Decoding $\cdot$
+   Distributed Inference\\
+   Kubernetes $\cdot$ Observability $\cdot$ NVIDIA H100/Blackwell $\cdot$ 2025--2026
+  }
+\end{center}
+
+\clearpage
+
+% ─── Copyright page ─────────────────────────────────────────
+\thispagestyle{empty}
+\vspace*{\fill}
+{\small
+\noindent\textbf{AI Inference Engineering: Building Fast, Scalable, and Production-Ready AI Systems}\\[0.5em]
+\noindent Edition 1.0 --- May 2026\\[0.5em]
+\noindent This book covers GPU inference engineering from first principles through
+production deployment.  It incorporates the latest developments in NVIDIA Blackwell
+architecture (B200/GB200), vLLM PagedAttention, TensorRT-LLM v1.2, SGLang, speculative
+decoding, FP8/FP4 quantization, and NVIDIA Dynamo disaggregated serving.\\[0.5em]
+\noindent \textit{For educational purposes.}\\[1em]
+\noindent \textbf{Typeset with} \LaTeX{} / TeX Live 2023.
+}
+\vspace*{\fill}
+\clearpage
+
+% ─── Table of contents ───────────────────────────────────────
+\tableofcontents
+\clearpage
+
+% ─── Preface ─────────────────────────────────────────────────
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\markboth{Preface}{Preface}
+
+\noindent\textit{"The best way to learn is to teach."}
+
+\vspace{0.5em}
+
+This book exists because AI is no longer just a research topic --- it is an
+engineering discipline.  Every time you ask a question to ChatGPT, Claude, or
+Gemini, thousands of GPU calculations happen in milliseconds.  Behind that seamless
+experience is a carefully engineered system: one that balances speed, cost, memory,
+and reliability at a massive scale.
+
+\emph{AI Inference Engineering} teaches you how to build and operate those systems.
+
+\bigskip
+\noindent\textbf{Who this book is for}
+
+\begin{itemize}
+  \item Software engineers wanting to understand AI infrastructure
+  \item ML engineers who want to go beyond model training
+  \item Platform engineers deploying AI at scale
+  \item Students learning GPU systems and distributed computing
+  \item Anyone curious about what happens after a model is trained
+\end{itemize}
+
+\bigskip
+\noindent\textbf{What you will learn}
+
+You will journey from the very first question --- \textit{what is a GPU?} --- all the
+way to operating a multi-node, multi-GPU inference cluster serving millions of
+requests per day.  Every concept is built from scratch using simple language and
+real-world analogies before advancing to production-grade engineering detail.
+
+\bigskip
+\noindent\textbf{How to read this book}
+
+Read it linearly the first time.  Each chapter builds on the previous one.
+Revisit individual chapters as reference when working on production systems.
+Run the code examples --- intuition comes from doing.
+
+\bigskip
+\noindent\textbf{A note on versions}
+
+The field moves fast.  This edition reflects the state of the art as of mid-2026:
+NVIDIA H100 and Blackwell (B200/GB200) GPUs, vLLM v0.7+, TensorRT-LLM v1.2,
+SGLang v0.4+, and Kubernetes-based deployment patterns.  Core concepts --- batching,
+memory management, quantization, parallelism --- are timeless.
+
+\clearpage
+
+% ============================================================
+%  PART I: FOUNDATIONS
+% ============================================================
+\part{Foundations}
+
+% ============================================================
+\chapter{Why Inference Engineering Matters}
+\label{ch:why}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand the difference between AI training and AI inference
+  \item Learn why inference efficiency is the key challenge for production AI
+  \item Grasp the scale of modern AI inference systems
+  \item Appreciate the engineering disciplines that make AI products work
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Two Lives of an AI Model}
+
+Every AI model lives two lives.
+
+In its \textbf{first life}, the model learns.  Enormous clusters of GPUs process
+billions of text samples, adjusting billions of numerical parameters over weeks or
+months.  This is called \keyterm{training}\index{training}.
+
+In its \textbf{second life}, the model works.  It answers questions, writes code,
+summarizes documents, and assists doctors, lawyers, and students around the world.
+This is called \keyterm{inference}\index{inference}.
+
+Training is a one-time event.  Inference happens billions of times a day.
+
+\analogybox{The Chef and the Restaurant}{
+Imagine a chef who spends years learning to cook --- practising recipes, mastering
+techniques, developing a personal style.  That long learning period is
+\textit{training}.
+
+Now the restaurant opens.  Every day the chef must cook hundreds of meals, each one
+served in minutes.  That daily cooking is \textit{inference}.
+
+The chef trains once.  The restaurant runs forever.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Inference Problem}
+
+When an AI model answers a question, it performs billions of mathematical
+operations for every sentence it generates.  A single forward pass through a
+70-billion-parameter model involves roughly 140 billion floating-point
+multiplications.
+
+\bigskip
+\noindent Now multiply that by the users:
+
+\begin{itemize}
+  \item ChatGPT processes over 100 million queries per day.
+  \item A single query might generate 200--1000 tokens.
+  \item Each token requires a full model forward pass.
+\end{itemize}
+
+\noindent This means AI companies run \textbf{trillions} of mathematical operations
+every second just to keep their services alive.  If those operations are not
+performed efficiently, one of two things happens: the service becomes unbearably slow,
+or the cost becomes unbearably high.
+
+\notebox{Key Insight}{
+NVIDIA's 2025 Annual Report explicitly noted that ``inference workloads surpassed
+training'' in revenue terms.  The industry has shifted: getting models to run
+efficiently is now more important commercially than making them more accurate.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{What Inference Engineers Do}
+
+An inference engineer's job is to make AI fast, cheap, and reliable at scale.
+This involves:
+
+\begin{itemize}
+  \item \textbf{Hardware selection:} Which GPUs to buy or rent, and how many
+  \item \textbf{Runtime optimization:} Making each GPU operation as fast as possible
+  \item \textbf{Memory management:} Fitting large models into limited GPU memory
+  \item \textbf{Batching:} Serving many users simultaneously from one GPU
+  \item \textbf{Quantization:} Compressing model weights to use less memory and run faster
+  \item \textbf{Deployment:} Packaging and scaling inference services on Kubernetes
+  \item \textbf{Observability:} Monitoring latency, throughput, and cost in production
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Three Metrics That Matter}
+
+\index{latency}\index{throughput}\index{memory}
+Every inference system is measured by three core metrics:
+
+\begin{description}
+  \item[\keyterm{Latency}] How long does the user wait?  Specifically,
+    \textit{Time to First Token (TTFT)}\index{TTFT} --- the delay before the
+    first word appears --- and \textit{Time per Output Token (TPOT)}\index{TPOT}
+    --- how quickly subsequent words arrive.
+  \item[\keyterm{Throughput}] How many requests can the system process per second?
+    Higher throughput means lower cost per query.
+  \item[\keyterm{Memory}] How much GPU memory does the system use?  Memory limits
+    how large a model you can serve and how many requests you can handle
+    simultaneously.
+\end{description}
+
+These three metrics form a \textbf{triangle of tradeoffs}.  Improving one often
+hurts another.  A large batch size improves throughput but increases latency.
+Quantization reduces memory but may reduce accuracy.  Understanding these tradeoffs
+is the core skill of an inference engineer.
+
+% ─────────────────────────────────────────────────────────────
+\section{A Preview of the Journey}
+
+This book walks through the entire inference engineering stack, layer by layer:
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.5cm]
+  \tikzstyle{layer}=[rectangle, draw=NavyBlue, fill=NavyBlue!8,
+                     rounded corners=4pt, minimum width=7cm,
+                     minimum height=0.7cm, font=\small]
+  \node[layer] (app) {Chapter 10: Production Deployment \& Kubernetes};
+  \node[layer, below=of app] (obs) {Chapter 9: Observability \& Profiling};
+  \node[layer, below=of obs] (dist) {Chapter 8: Distributed Inference};
+  \node[layer, below=of dist] (rt) {Chapter 7: Inference Runtimes (vLLM, TRT-LLM, SGLang)};
+  \node[layer, below=of rt] (sd) {Chapter 6: Speculative Decoding};
+  \node[layer, below=of sd] (quant) {Chapter 5: Quantization};
+  \node[layer, below=of quant] (kv) {Chapter 4: KV Cache \& Memory Management};
+  \node[layer, below=of kv] (tx) {Chapter 3: Transformer Inference Mechanics};
+  \node[layer, below=of tx] (cuda) {Chapter 2: GPU Architecture \& CUDA};
+  \node[layer, below=of cuda, fill=AccentOrange!15, draw=AccentOrange]
+    (found) {Chapter 1: Why Inference Engineering Matters (this chapter)};
+\end{tikzpicture}
+\end{center}
+
+Each layer depends on the one below it.  Build a firm foundation and the rest
+becomes intuitive.
+
+\begin{chapsummary}
+AI inference is the act of running a trained model to answer user queries.
+It is performed billions of times daily and requires careful engineering to be fast
+and affordable.  Three key metrics --- latency, throughput, and memory --- govern
+every decision an inference engineer makes.  This book builds your knowledge from
+the GPU chip upward to a full production deployment.
+\end{chapsummary}
+
+\begin{exercise}[Reflection]
+Before reading further, write down three AI products you use daily.  For each one,
+estimate: How many users might use it simultaneously?  What latency would feel
+``good enough'' to you?  Keep these numbers in mind as you read --- they will help
+you appreciate why every optimization in this book matters.
+\end{exercise}
+
+% ============================================================
+\chapter{GPU Architecture and CUDA Fundamentals}
+\label{ch:gpu}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand the fundamental difference between CPUs and GPUs
+  \item Learn GPU memory hierarchy: registers, shared memory, HBM
+  \item Understand CUDA programming model: threads, blocks, grids
+  \item Grasp how Tensor Cores accelerate matrix operations
+  \item Understand NVIDIA's GPU generations: Volta through Blackwell
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{Why GPUs? The Parallel Computation Story}
+
+A CPU\index{CPU} (Central Processing Unit) is designed for sequential, versatile
+work.  It has a small number of very powerful cores --- typically 8 to 64 ---
+each capable of complex decision-making, branch prediction, and running operating
+systems.
+
+A GPU\index{GPU} (Graphics Processing Unit) is built for a completely different
+purpose: doing the \textit{same simple operation thousands of times simultaneously}.
+
+\analogybox{One Expert vs.\ One Thousand Students}{
+Imagine you need to add the numbers on 10{,}000 pieces of paper.
+
+A \textbf{CPU} is like one expert accountant.  Fast, smart, capable of handling
+complex calculations.  But it works through papers one at a time --- or maybe a
+few at a time with multiple cores.
+
+A \textbf{GPU} is like 10{,}000 students with calculators, each working on one
+paper simultaneously.  Each student is slower and less capable than the expert.
+But together, they finish the whole pile in the time the expert handles one.
+
+For AI, which involves performing the same multiplication millions of times across
+different data, the 10{,}000 students win --- by orders of magnitude.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{GPU Hardware Architecture}
+
+\subsection{Streaming Multiprocessors (SMs)}
+
+The basic computational unit of a GPU is the
+\keyterm{Streaming Multiprocessor}\index{SM, Streaming Multiprocessor} (SM).
+An NVIDIA H100 GPU has 132 SMs.  Each SM contains:
+
+\begin{itemize}
+  \item \textbf{CUDA cores:} General-purpose floating-point and integer compute units
+  \item \textbf{Tensor Cores:} Specialized matrix-multiply units (described below)
+  \item \textbf{Registers:} Tiny, ultra-fast memory local to each thread
+  \item \textbf{Shared Memory / L1 Cache:} Fast memory shared across threads in one SM
+  \item \textbf{Warp Schedulers:} Hardware that manages thread execution
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  % GPU chip outline
+  \draw[fill=NavyBlue!8, draw=NavyBlue, line width=1.5pt, rounded corners=8pt]
+    (0,0) rectangle (12,8);
+  \node[font=\large\bfseries\color{NavyBlue}, anchor=north] at (6,7.8) {GPU Die};
+
+  % GPC blocks
+  \foreach \gx/\gy/\gn in {0.5/4.2/GPC 1, 4.5/4.2/GPC 2, 8.5/4.2/GPC 3,
+                             0.5/0.3/GPC 4, 4.5/0.3/GPC 5, 8.5/0.3/GPC 6} {
+    \draw[fill=NavyBlue!20, draw=NavyBlue, rounded corners=4pt]
+      (\gx,\gy) rectangle (\gx+3.5,\gy+3.5);
+    \node[font=\tiny\bfseries\color{NavyBlue}, anchor=north] at (\gx+1.75,\gy+3.4) {\gn};
+    % SM inside GPC
+    \foreach \sx in {0,1} \foreach \sy in {0,1,2} {
+      \draw[fill=AccentOrange!30, draw=AccentOrange, rounded corners=2pt]
+        (\gx+0.2+\sx*1.65, \gy+0.25+\sy*1.0) rectangle
+        (\gx+1.55+\sx*1.65, \gy+1.05+\sy*1.0);
+      \node[font=\tiny, anchor=center] at
+        (\gx+0.875+\sx*1.65, \gy+0.65+\sy*1.0) {SM};
+    }
+  }
+
+  % HBM label
+  \draw[fill=AccentGreen!20, draw=AccentGreen, line width=1pt]
+    (-1.8, 1) rectangle (-0.2, 7);
+  \node[font=\small\bfseries\color{AccentGreen}, rotate=90] at (-1,4) {HBM3e};
+  \draw[-{Stealth}, AccentGreen, line width=1pt] (-0.2,4) -- (0,4);
+
+  \node[font=\tiny\color{MidGray}, anchor=south] at (6,-0.1)
+    {Simplified: H100 has 132 SMs across 8 GPCs};
+\end{tikzpicture}
+\end{center}
+
+\subsection{The GPU Memory Hierarchy}
+
+\index{memory hierarchy}
+Memory in a GPU is organized in layers, from fastest (but tiny) to slowest
+(but huge):
+
+\begin{longtable}{@{}p{3cm}p{2cm}p{2cm}p{5.5cm}@{}}
+  \toprule
+  \textbf{Memory Type} & \textbf{Size} & \textbf{Bandwidth} & \textbf{Purpose} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Memory Type} & \textbf{Size} & \textbf{Bandwidth} & \textbf{Purpose} \\
+  \midrule
+  \endhead
+  Registers & 256 KB/SM & $\sim$20 TB/s & Per-thread data \\
+  L1/Shared Memory & 228 KB/SM & $\sim$19 TB/s & Thread cooperation within SM \\
+  L2 Cache & 50 MB & $\sim$12 TB/s & Cross-SM caching \\
+  HBM3e (VRAM)\index{HBM} & 80--141 GB & 3.35 TB/s & Model weights, KV cache \\
+  CPU RAM (via NVLink/PCIe) & TBs & 900 GB/s & Offload, overflow \\
+  \bottomrule
+  \caption{H100 GPU Memory Hierarchy}
+\end{longtable}
+
+\tipbox{The Golden Rule of GPU Programming}{
+The fastest code is code that keeps data as close to the compute units as possible.
+If your CUDA kernel reads from HBM when it could read from shared memory, you are
+leaving 5$\times$ performance on the table.  Every serious GPU optimization is,
+at its heart, a memory access optimization.
+}
+
+\subsection{Tensor Cores: The Matrix Multiplication Engines}
+
+\keyterm{Tensor Cores}\index{Tensor Cores} are specialized hardware units inside
+each SM designed for one specific task: ultra-fast matrix multiplication.  They
+were introduced in the Volta architecture (2017) and have been enhanced in every
+generation since.
+
+Why does matrix multiplication matter for AI?  Because the core operation in every
+neural network layer is a \textbf{matrix multiplication} (GEMM --- General Matrix
+Multiply).  When you multiply an input vector by a weight matrix to produce an
+output, that is a matrix multiply.  Modern LLMs perform this operation hundreds of
+times per forward pass.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+  % Matrix A
+  \draw[fill=NavyBlue!15, draw=NavyBlue] (0,0) rectangle (1.5,2);
+  \node[font=\small\bfseries] at (0.75,1) {A};
+  \node[font=\tiny\color{MidGray}] at (0.75,-0.3) {$m \times k$};
+
+  % times
+  \node[font=\large] at (2.0,1) {$\times$};
+
+  % Matrix B
+  \draw[fill=AccentOrange!20, draw=AccentOrange] (2.5,0.5) rectangle (4.5,2.5);
+  \node[font=\small\bfseries] at (3.5,1.5) {B};
+  \node[font=\tiny\color{MidGray}] at (3.5,-0.3) {$k \times n$};
+
+  % equals
+  \node[font=\large] at (5.0,1) {$=$};
+
+  % Matrix C
+  \draw[fill=AccentGreen!20, draw=AccentGreen] (5.5,0) rectangle (7.5,2);
+  \node[font=\small\bfseries] at (6.5,1) {C};
+  \node[font=\tiny\color{MidGray}] at (6.5,-0.3) {$m \times n$};
+
+  % Tensor Core label
+  \draw[-{Stealth}, thick, AccentOrange] (8,1.5) -- (6.8,1.5);
+  \node[anchor=west, font=\small\color{AccentOrange}] at (8,1.5)
+    {Tensor Core computes this};
+  \node[anchor=west, font=\tiny\color{MidGray}] at (8,1.0)
+    {in a single hardware cycle};
+\end{tikzpicture}
+\end{center}
+
+The H100 Tensor Core operates on \textbf{FP8} precision natively, performing a
+$16 \times 8 \times 16$ matrix multiplication in a single instruction --- the
+equivalent of 2048 floating-point multiply-add operations per cycle.
+
+\subsubsection{GPU Generations and Precision Support}
+
+\begin{longtable}{@{}p{2cm}p{2cm}p{1.5cm}p{1.5cm}p{5cm}@{}}
+  \toprule
+  \textbf{GPU} & \textbf{Arch.} & \textbf{Year} &
+  \textbf{Peak (FP8)} & \textbf{Key Features} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{GPU} & \textbf{Arch.} & \textbf{Year} &
+  \textbf{Peak (FP8)} & \textbf{Key Features} \\
+  \midrule
+  \endhead
+  A100 & Ampere & 2020 & 624 TFLOPS & First FP16 Tensor Cores, NVLink 3 \\
+  H100 SXM & Hopper & 2022 & 3958 TFLOPS & FP8 native, Transformer Engine, NVLink 4 \\
+  H200 SXM & Hopper+ & 2024 & 3958 TFLOPS & 141 GB HBM3e memory \\
+  B200 & Blackwell & 2025 & 9000 TFLOPS & FP4, 5th-gen Tensor Cores, 30$\times$ H100 inference \\
+  GB200 NVL72 & Blackwell & 2025 & $\sim$1 EFLOPS & 72 GPUs in a rack, disaggregated serving \\
+  \bottomrule
+  \caption{NVIDIA GPU Generations for AI Inference}
+  \label{tab:gpus}
+\end{longtable}
+\index{H100}\index{Blackwell}\index{B200}
+
+\notebox{Blackwell's Leap}{
+The NVIDIA B200 (Blackwell) delivers up to 30$\times$ the inference performance
+of the H100 on specific workloads, particularly for large models using FP4
+quantization.  The fifth-generation Tensor Cores support FP32, FP16, BF16, FP8,
+INT8, FP6, and FP4 --- enabling extremely flexible precision choices.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{CUDA Programming Model}
+\index{CUDA}
+
+\keyterm{CUDA} (Compute Unified Device Architecture) is NVIDIA's programming
+framework for writing code that runs on GPUs.  Every inference runtime ---
+vLLM, TensorRT, PyTorch --- ultimately executes CUDA code under the hood.
+
+\subsection{The Thread Hierarchy}
+
+CUDA organizes GPU execution in a strict three-level hierarchy:
+
+\begin{itemize}
+  \item \textbf{Thread:\index{thread}} The smallest unit.  One thread performs one computation.
+  \item \textbf{Block:\index{block}} A group of up to 1024 threads that share memory and can synchronize.
+  \item \textbf{Grid:\index{grid}} A collection of blocks that together run one kernel.
+\end{itemize}
+
+\analogybox{School Analogy}{
+Think of a grid as a \textbf{school}.
+Each block is a \textbf{classroom}.
+Each thread is a \textbf{student}.
+
+Students in one classroom can pass notes (shared memory).
+Students in different classrooms cannot talk directly.
+The principal (GPU scheduler) tells each classroom what lesson to do (\textit{kernel}).
+}
+
+\subsection{A Simple CUDA Kernel}
+
+\begin{lstlisting}[style=cstyle, caption={A simple CUDA vector addition kernel},
+                   label={lst:cuda_add}]
+// This function runs on the GPU -- one thread per element
+__global__ void vector_add(float* A, float* B, float* C, int N) {
+    // Each thread computes its own index
+    // blockIdx.x  = which block am I in?
+    // blockDim.x  = how many threads per block?
+    // threadIdx.x = which thread am I within my block?
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // Boundary check: don't go past the array end
+    if (idx < N) {
+        C[idx] = A[idx] + B[idx];   // Each thread adds one element
+    }
+}
+
+// Called from the CPU (host)
+void run_vector_add(float* A, float* B, float* C, int N) {
+    int threads_per_block = 256;
+    int num_blocks = (N + threads_per_block - 1) / threads_per_block;
+
+    // <<< grid_size, block_size >>> launches the kernel
+    vector_add<<<num_blocks, threads_per_block>>>(A, B, C, N);
+}
+\end{lstlisting}
+
+\subsection{Memory Management in CUDA}
+
+\begin{lstlisting}[style=cstyle, caption={CUDA memory allocation and transfer}]
+// Allocate memory on CPU (host)
+float* h_A = (float*)malloc(N * sizeof(float));
+
+// Allocate memory on GPU (device)
+float* d_A;
+cudaMalloc(&d_A, N * sizeof(float));    // GPU memory allocation
+
+// Transfer data CPU -> GPU
+cudaMemcpy(d_A, h_A, N*sizeof(float), cudaMemcpyHostToDevice);
+
+// Run kernel on GPU
+my_kernel<<<grid, block>>>(d_A, ...);
+
+// Transfer results GPU -> CPU
+cudaMemcpy(h_result, d_result, N*sizeof(float), cudaMemcpyDeviceToHost);
+
+// Free GPU memory
+cudaFree(d_A);
+\end{lstlisting}
+
+\notebox{Memory Transfer is Expensive}{
+Moving data between CPU and GPU via PCIe costs time --- typically 16 GB/s on a
+PCIe 4.0 $\times$16 connection.  This is 100$\times$ slower than reading from GPU
+HBM.  In production inference, the goal is to keep \emph{everything} on the GPU
+and minimize CPU-GPU transfers.
+}
+
+\subsection{Warps: The Real Execution Unit}
+
+While blocks are the logical unit, hardware executes threads in groups of 32
+called \keyterm{warps}\index{warp}.  All 32 threads in a warp execute the same
+instruction simultaneously.  If threads in a warp take different code paths
+(e.g., an if/else), both paths execute sequentially with some threads masked off.
+This is called \keyterm{warp divergence}\index{warp divergence} and is a major
+source of GPU performance loss.
+
+\begin{exercise}[Thread Index Calculation]
+A CUDA kernel is launched with a grid of 16 blocks, each containing 256 threads.
+\begin{enumerate}
+  \item What is the total number of threads?
+  \item If \texttt{blockIdx.x = 5} and \texttt{threadIdx.x = 100},
+        what is the global thread index?
+  \item If processing an array of 3000 elements, how many threads will be out
+        of bounds and need a guard check?
+\end{enumerate}
+\end{exercise}
+
+% ─────────────────────────────────────────────────────────────
+\section{FlashAttention: The Kernel That Changed Inference}
+\index{FlashAttention}
+
+Before we leave GPU basics, let's preview one of the most important CUDA
+optimizations ever invented for AI: \keyterm{FlashAttention}.
+
+The standard attention computation in a Transformer reads the key, query, and
+value matrices from HBM, computes a large intermediate matrix (the attention
+scores), writes it back to HBM, then reads it again to apply softmax.  This is
+\textbf{extremely memory-bandwidth-bound}.
+
+FlashAttention (Dao et al., 2022) reorganizes this computation so that all
+intermediate results stay in shared memory.  It never writes the large intermediate
+matrix to HBM at all.  This single change achieves:
+
+\begin{itemize}
+  \item $2-4\times$ faster attention on GPU
+  \item $5-20\times$ less memory for attention
+  \item Exact same mathematical result as standard attention
+\end{itemize}
+
+FlashAttention is now standard in every production inference engine.
+
+\begin{chapsummary}
+GPUs accelerate AI because they perform thousands of operations in parallel.
+The memory hierarchy (registers $\to$ shared memory $\to$ HBM) is central to
+performance: keep data close to compute.  CUDA organizes execution as grids of
+blocks of threads.  Tensor Cores handle matrix multiplication at extreme speed.
+Modern H100 and Blackwell GPUs support FP8/FP4 precision for even higher
+throughput.  FlashAttention shows how smart kernel design can dramatically improve
+both speed and memory use.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Transformer Inference Mechanics}
+\label{ch:transformer}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand how Transformer models generate text token by token
+  \item Learn the two phases of inference: prefill and decode
+  \item Understand why decode is memory-bandwidth-bound, not compute-bound
+  \item Grasp the roofline model for compute vs.\ memory bound analysis
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{How Transformers Generate Text}
+
+\index{autoregressive decoding}
+Large Language Models generate text \textbf{one token at a time}.  A
+\keyterm{token}\index{token} is roughly a word-piece --- ``inference'' might be
+one token, while ``transformers'' might be two: ``transform'' and ``ers''.
+
+When you send a prompt to an LLM, here is what happens:
+
+\begin{enumerate}
+  \item Your prompt is tokenized into a list of integer token IDs.
+  \item The model processes all prompt tokens simultaneously (\textbf{prefill phase}).
+  \item The model generates one output token, then another, then another, until
+        it produces an end-of-sequence token or reaches a length limit
+        (\textbf{decode phase}).
+\end{enumerate}
+
+\analogybox{The Sentence Completion Game}{
+Imagine you are playing a word-completion game.  You read the entire sentence so
+far, then you predict the most likely next word.  You write it down.  Now you read
+the whole sentence again, including the word you just wrote, and predict the next
+word.  Repeat.
+
+This is exactly how an LLM works.  The entire conversation history is reread every
+time a new token is generated.  This is called \textit{autoregressive} generation.
+}
+
+\subsection{The Two Phases in Detail}
+
+\keyterm{Prefill}\index{prefill} processes the entire input prompt in a single
+forward pass.  If your prompt has 512 tokens, all 512 are processed at once,
+using the GPU's full parallel compute power.  Prefill is \textbf{compute-bound}:
+the GPU is busy multiplying matrices.
+
+\keyterm{Decode}\index{decode} generates one token per step.  At each step, only a
+single new token is processed (the most recently generated one), while all
+previous tokens are accessible through the KV cache (Chapter~\ref{ch:kvcache}).
+Decode is \textbf{memory-bandwidth-bound}: the GPU spends most of its time loading
+model weights from HBM, not computing.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+  % Timeline
+  \draw[-{Stealth}, line width=1.5pt] (0,0) -- (12,0) node[right] {Time};
+
+  % Prefill block
+  \draw[fill=NavyBlue!25, draw=NavyBlue, rounded corners=4pt]
+    (0,0.2) rectangle (3,1.5);
+  \node[font=\small\bfseries\color{NavyBlue}] at (1.5,0.85)
+    {\textbf{PREFILL}};
+  \node[font=\tiny\color{MidGray}] at (1.5,0.4)
+    {All prompt tokens processed};
+  \node[font=\tiny\color{MidGray}] at (1.5,0.2)
+    {Compute-bound};
+
+  % Decode blocks
+  \foreach \i/\tok in {1/``The'', 2/``sky'', 3/``is'', 4/``blue'', 5/``.'', 6/\small{\textless /s\textgreater}} {
+    \pgfmathtruncatemacro{\x}{3 + (\i-1)*1.4}
+    \draw[fill=AccentOrange!20, draw=AccentOrange, rounded corners=3pt]
+      (\x,0.2) rectangle (\x+1.2,1.5);
+    \node[font=\tiny\bfseries\color{AccentOrange}] at (\x+0.6,1.0) {\tok};
+    \node[font=\tiny\color{MidGray}] at (\x+0.6,0.45) {step \i};
+  }
+
+  % TTFT arrow
+  \draw[{Stealth}-{Stealth}, MidGray] (0,-0.4) -- (3,-0.4);
+  \node[font=\tiny\color{MidGray}] at (1.5,-0.65) {TTFT};
+
+  % TPOT arrow
+  \draw[{Stealth}-{Stealth}, MidGray] (3,-0.4) -- (4.4,-0.4);
+  \node[font=\tiny\color{MidGray}] at (3.7,-0.65) {TPOT};
+\end{tikzpicture}
+\end{center}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Roofline Model: Compute vs.\ Memory Bound}
+\index{roofline model}
+
+To understand why decode is slow, we need the \keyterm{roofline model} --- a
+simple framework for determining whether a computation is limited by arithmetic
+speed or memory bandwidth.
+
+Every GPU has two fundamental limits:
+\begin{itemize}
+  \item \textbf{Peak FLOPS:} How many floating-point operations per second it can
+        perform (H100: $\sim$1979 TFLOPS in FP16)
+  \item \textbf{Peak Memory Bandwidth:} How fast it can read data from HBM
+        (H100: 3.35 TB/s)
+\end{itemize}
+
+For a given computation, the \textbf{arithmetic intensity} is:
+\[
+  \text{Arithmetic Intensity} =
+  \frac{\text{FLOP performed}}{\text{bytes read from memory}}
+\]
+
+If arithmetic intensity is \textbf{above} a threshold (called the ridge point),
+the operation is \textbf{compute-bound}: your GPU is fast enough but you're
+not feeding it enough data.
+
+If arithmetic intensity is \textbf{below} the ridge point, the operation is
+\textbf{memory-bandwidth-bound}: your GPU is waiting for data from memory.
+
+For decode with a single request:
+\begin{itemize}
+  \item We read the entire model ($\sim$140 GB for a 70B parameter FP16 model)
+  \item We perform only $\sim$280 GFLOPs of computation per token
+  \item Arithmetic intensity $\approx 2$ FLOP/byte --- far below the H100's
+        ridge point of $\sim$590 FLOP/byte
+\end{itemize}
+
+\warnbox{The Decode Efficiency Problem}{
+For a single request, the GPU is roughly \textbf{99\% idle during decode}.
+We load 140 GB of model weights to produce maybe 50 bytes of output token.
+This is deeply inefficient --- and it's the core reason batching is so
+important in inference engineering.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{Inside a Transformer Layer}
+
+A single Transformer layer\index{Transformer layer} contains two main components:
+
+\begin{enumerate}
+  \item \textbf{Multi-Head Self-Attention (MHA):} Each token attends to every
+        other token in the sequence.
+  \item \textbf{Feed-Forward Network (FFN):} A two-layer MLP applied independently
+        to each token.
+\end{enumerate}
+
+\subsection{The Attention Computation}
+
+For a sequence of $n$ tokens, the attention computation is:
+
+\[
+  \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V
+\]
+
+where $Q$, $K$, $V$ are the query, key, and value matrices derived from the input
+by multiplying with learned weight matrices $W_Q$, $W_K$, $W_V$.
+
+During \textbf{decode}, we only compute $Q$ for the new token, but we need all
+previous $K$ and $V$ values.  This is why we need a \textbf{KV Cache}
+(Chapter~\ref{ch:kvcache}).
+
+\subsection{Memory Footprint of a Large Model}
+
+For a Llama-3 70B model in FP16:
+
+\begin{center}
+\begin{tabular}{lrr}
+  \toprule
+  \textbf{Component} & \textbf{Parameters} & \textbf{Memory (FP16)} \\
+  \midrule
+  Embedding layers & 0.5B & 1 GB \\
+  80 Attention layers & 40B & 80 GB \\
+  80 FFN layers & 28B & 56 GB \\
+  Other (LN, head) & 1.5B & 3 GB \\
+  \midrule
+  \textbf{Total} & \textbf{70B} & \textbf{$\sim$140 GB} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+This model requires \textbf{two H100 80GB GPUs} just to load the weights, before
+any KV cache or batch data.
+
+\begin{chapsummary}
+Transformers generate text autoregressively --- one token at a time.  The prefill
+phase processes the entire prompt in parallel (compute-bound), while the decode
+phase generates one token at a time (memory-bandwidth-bound).  The roofline model
+helps understand why: during decode we load all model weights for minimal
+computation.  Batching multiple requests together is the key to making decode
+efficient.  Large models need substantial GPU memory just for their weights.
+\end{chapsummary}
+
+% ============================================================
+\chapter{KV Cache and Memory Management}
+\label{ch:kvcache}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand why the KV cache exists and what it stores
+  \item Learn how PagedAttention eliminates KV cache fragmentation
+  \item Calculate KV cache memory requirements for production systems
+  \item Understand prefix caching and its performance benefits
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{Why We Need a KV Cache}
+
+Recall the decode phase: we generate one new token at a time, but each token
+requires attention over \emph{all} previous tokens.
+
+Without caching: at step $t$, to generate token $t+1$, we would recompute
+all the key and value vectors for tokens $1$ through $t$.  This means
+the computation grows linearly with sequence length: generating a 1000-token
+response costs $1+2+3+\ldots+1000 = 500{,}500$ attention computations instead
+of just 1000.
+
+The \keyterm{KV Cache}\index{KV cache} solves this by \textbf{storing} the key
+and value matrices computed for every past token.  When generating token $t+1$,
+we reuse all stored $K$ and $V$ from steps $1$ through $t$ and only compute
+new $K$ and $V$ for the latest token.
+
+\analogybox{The Meeting Notes}{
+Imagine you are taking notes in a long meeting.  Instead of re-reading the entire
+transcript every time you want to write the next sentence, you keep a notepad of
+the key points discussed so far.
+
+Each time you need to reference the past, you glance at your notepad --- not the
+entire transcript.
+
+The KV cache is that notepad.  It stores the important ``memory'' of past tokens so
+the GPU doesn't recompute it every step.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{KV Cache Memory Calculation}
+
+The KV cache size for a single sequence is:
+
+\[
+  \text{KV cache size} = 2 \times n_\text{layers} \times n_\text{heads} \times
+  d_\text{head} \times \text{seq\_len} \times \text{bytes\_per\_element}
+\]
+
+The factor 2 accounts for both keys ($K$) and values ($V$).
+
+For Llama-3 70B (FP16, 4096 sequence length):
+\[
+  2 \times 80 \times 64 \times 128 \times 4096 \times 2 \approx \mathbf{10.7\text{ GB}}
+\]
+
+\warnbox{Memory Shock}{
+A single conversation of 4096 tokens with Llama-3 70B uses \textbf{10.7 GB} of KV
+cache --- on top of the 140 GB for weights.  Serving 10 simultaneous users requires
+107 GB of KV cache alone.  Efficient KV cache management is one of the biggest
+challenges in production inference.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Problem: KV Cache Fragmentation}
+
+Before PagedAttention, every inference engine allocated KV cache memory using
+a single large contiguous block per sequence.
+
+Imagine you are running a hotel.  Every guest (request) is allocated a room block:
+a contiguous range of rooms.  But you don't know in advance how long each guest
+will stay.  You must reserve the maximum possible stay (max sequence length) for
+each guest upfront.  The result: many rooms sit empty, but no new guests can be
+booked because there's no single contiguous block large enough.
+
+In production, this \textbf{fragmentation} means that even when 30\% of GPU
+memory is technically free, it cannot be used because it is scattered in small
+unusable pieces.  Studies found that before PagedAttention, 60--80\% of GPU
+memory allocated for KV caches was wasted.
+
+% ─────────────────────────────────────────────────────────────
+\section{PagedAttention: Solving Fragmentation}
+\index{PagedAttention}
+
+\keyterm{PagedAttention} (Kwon et al., SOSP 2023 --- the core innovation behind
+vLLM) borrows an idea from operating system virtual memory: \textbf{paging}.
+
+Instead of one contiguous block per request, memory is divided into fixed-size
+\textbf{blocks} (typically 16 or 32 tokens per block).  A request uses a
+\textbf{block table} --- a list of pointers to the physical blocks it owns.
+Blocks do not need to be contiguous in memory.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  % Physical GPU memory
+  \draw[fill=LightGray, draw=DarkGray, rounded corners=4pt]
+    (0,0) rectangle (10,2.5);
+  \node[font=\small\bfseries\color{DarkGray}, anchor=north] at (5,2.5)
+    {Physical GPU Memory (KV Cache Pool)};
+
+  % Blocks
+  \foreach \i/\col/\lbl in {
+    0/NavyBlue!40/Req A,
+    1/AccentOrange!40/Req B,
+    2/AccentGreen!40/Req C,
+    3/NavyBlue!40/Req A,
+    4/AccentOrange!40/Req B,
+    5/MidGray!30/Free,
+    6/AccentGreen!40/Req C,
+    7/AccentGreen!40/Req C,
+    8/NavyBlue!40/Req A,
+    9/MidGray!30/Free}
+  {
+    \pgfmathsetmacro{\xpos}{\i}
+    \draw[fill=\col, draw=DarkGray, rounded corners=2pt]
+      (\xpos*1+0.05,0.3) rectangle (\xpos*1+0.9,2.2);
+    \node[font=\tiny, rotate=90] at (\xpos*1+0.475,1.25) {\lbl};
+    \node[font=\tiny\color{MidGray}, anchor=north] at (\xpos*1+0.475,0.25)
+      {\i};
+  }
+
+  % Block tables
+  \foreach \req/\col/\y/\blocks in {
+    A/NavyBlue/4.0/{0,3,8},
+    B/AccentOrange/3.0/{1,4},
+    C/AccentGreen/2.0/{2,6,7}}
+  {
+    \node[font=\small\bfseries\color{\col}, anchor=east] at (-0.1,\y) {Req \req};
+    \draw[fill=\col!15, draw=\col, rounded corners=2pt]
+      (0,\y-0.3) rectangle (2.5,\y+0.3);
+    \node[font=\small\color{\col}] at (1.25,\y) {blocks: \blocks};
+  }
+
+  % arrows from block table to physical memory
+  \draw[-{Stealth}, NavyBlue!60, dashed] (2.5,4.0) -- (0.475,2.2);
+  \draw[-{Stealth}, NavyBlue!60, dashed] (2.5,4.0) -- (3.475,2.2);
+  \draw[-{Stealth}, NavyBlue!60, dashed] (2.5,4.0) -- (8.475,2.2);
+\end{tikzpicture}
+\end{center}
+
+\notebox{PagedAttention Impact}{
+PagedAttention reduces KV cache waste from 60--80\% down to under 5\%.
+vLLM achieves 14--24$\times$ higher throughput than naive HuggingFace Transformers
+and 2.2--3.5$\times$ higher than early Text Generation Inference (TGI) engines
+for LLaMA models on NVIDIA GPUs.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{Prefix Caching}
+\index{prefix caching}
+
+Many queries share common prefixes: the same system prompt, the same document
+being analyzed, the same few-shot examples.
+
+\keyterm{Prefix caching} (also called \textit{prompt caching} or \textit{RadixAttention}
+in SGLang) stores the KV cache of common prefixes and \textbf{reuses} them across
+multiple requests.
+
+If 1000 users all send queries starting with the same 2000-token system prompt,
+prefix caching means the KV computation for those 2000 tokens is performed
+\textit{once}, not 1000 times.
+
+\begin{lstlisting}[language=Python, caption={Enabling prefix caching in vLLM}]
+from vllm import LLM, SamplingParams
+
+# Initialize vLLM with prefix caching enabled
+llm = LLM(
+    model="meta-llama/Llama-3-70b-instruct",
+    enable_prefix_caching=True,   # Enable prefix caching
+    gpu_memory_utilization=0.90,  # Use 90% of GPU memory for KV pool
+    tensor_parallel_size=2,       # Across 2 GPUs
+)
+
+# Many requests sharing the same system prompt will be served
+# faster because the KV cache for the system prompt is reused
+system_prompt = "You are a helpful coding assistant. " * 200  # long prompt
+
+responses = llm.generate(
+    [system_prompt + user_q for user_q in user_questions],
+    SamplingParams(temperature=0.7, max_tokens=512)
+)
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{KV Cache Quantization}
+\index{KV cache quantization}
+
+Since KV cache can consume more memory than the model weights themselves for long
+sequences, quantizing the KV cache is a powerful optimization.
+
+Recent research shows that INT8 quantization of the KV cache achieves a
+\textbf{4$\times$ memory reduction} with reconstruction error below 0.004 and
+attention score error below 0.1 even for 8K-dimensional heads.  FP8 KV
+quantization is now natively supported in vLLM and TensorRT-LLM.
+
+\begin{lstlisting}[language=Python, caption={FP8 KV cache quantization in vLLM}]
+from vllm import LLM
+
+llm = LLM(
+    model="meta-llama/Llama-3-70b-instruct",
+    kv_cache_dtype="fp8",         # Use FP8 for KV cache
+    enable_prefix_caching=True,
+    gpu_memory_utilization=0.92,
+)
+# FP8 KV cache reduces memory by ~2x vs FP16
+# Minimal accuracy degradation in practice
+\end{lstlisting}
+
+\begin{chapsummary}
+The KV cache stores computed keys and values for all past tokens, allowing
+efficient autoregressive generation without recomputation.  KV cache memory
+grows linearly with sequence length and can easily exceed model weight memory.
+PagedAttention solves fragmentation by using block-based allocation similar to
+OS virtual memory, enabling near-zero waste.  Prefix caching reuses KV state
+for shared prompt prefixes.  FP8/INT8 quantization of the KV cache reduces
+memory by 2--4$\times$ with minimal accuracy impact.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Quantization: Fitting More Into Less Memory}
+\label{ch:quantization}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand what quantization is and why it matters for inference
+  \item Learn the difference between INT8, FP8, INT4, FP4 quantization
+  \item Understand post-training quantization (PTQ) vs.\ quantization-aware training
+  \item Apply AWQ and GPTQ quantization in practice
+  \item Understand the accuracy--speed--memory tradeoffs
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{What Is Quantization?}
+
+Neural network weights are typically stored in full precision:
+\textbf{FP32} (32 bits per number) or \textbf{FP16/BF16} (16 bits per number).
+
+\keyterm{Quantization}\index{quantization} replaces these high-precision numbers
+with lower-precision representations --- fewer bits per number --- that are
+\textbf{good enough} for inference.
+
+\analogybox{The Photo Compression Analogy}{
+Imagine a photograph stored at full resolution: 48 megapixels, 24 bits per pixel.
+The file is huge --- say, 200 MB.
+
+Now you apply JPEG compression.  The image now takes 2 MB.  When you look at it
+on your phone screen, you cannot tell the difference.
+
+Quantization is compression for AI model weights.  You reduce the number of bits
+per weight.  The model takes less memory, runs faster, and (if done carefully)
+produces answers that are almost identical to the original.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{Number Formats: A Visual Guide}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+  % FP32
+  \draw[fill=NavyBlue!20] (0,3) rectangle (8,3.6);
+  \node[font=\tiny, anchor=west] at (0.1,3.3) {S};
+  \foreach \i in {1,...,8} \draw[NavyBlue] (\i*0.2,3) -- (\i*0.2,3.6);
+  \foreach \i in {1,...,7} \draw[MidGray] (1.6+\i*0.288,3) -- (1.6+\i*0.288,3.6);
+  \draw[fill=NavyBlue!8] (1.6,3) rectangle (8,3.6);
+  \node[font=\tiny\color{MidGray}] at (4,3.8) {FP32: 1 sign + 8 exponent + 23 mantissa = 32 bits};
+  \node[font=\tiny\color{NavyBlue}, anchor=west] at (0.1,2.75) {Sign};
+  \node[font=\tiny\color{NavyBlue}] at (1.0,2.75) {Exponent (8)};
+  \node[font=\tiny\color{MidGray}] at (4.8,2.75) {Mantissa (23)};
+
+  % FP16
+  \draw[fill=AccentOrange!20] (0,1.8) rectangle (4,2.4);
+  \node[font=\tiny\color{MidGray}] at (2,2.6)
+    {FP16: 1+5+10 = 16 bits};
+
+  % INT8
+  \draw[fill=AccentGreen!20] (0,0.6) rectangle (2,1.2);
+  \node[font=\tiny\color{MidGray}] at (1,1.4) {INT8: 8 bits (-128 to 127)};
+
+  % INT4
+  \definecolor{INT4Color}{RGB}{180,100,0}
+  \draw[fill=INT4Color!20] (0,-0.6) rectangle (1,-0.0);
+  \node[font=\tiny\color{MidGray}] at (0.5,-0.8) {INT4: 4 bits};
+
+  % Size comparison
+  \node[font=\small\bfseries\color{DarkGray}, anchor=west] at (8.5,3.3) {32 bits};
+  \node[font=\small\bfseries\color{DarkGray}, anchor=west] at (8.5,2.1) {16 bits (2$\times$ smaller)};
+  \node[font=\small\bfseries\color{DarkGray}, anchor=west] at (8.5,0.9) {8 bits (4$\times$ smaller)};
+  \node[font=\small\bfseries\color{DarkGray}, anchor=west] at (8.5,-0.3) {4 bits (8$\times$ smaller)};
+\end{tikzpicture}
+\end{center}
+
+\begin{longtable}{@{}p{1.5cm}p{1.5cm}p{1.5cm}p{4cm}p{3cm}@{}}
+  \toprule
+  \textbf{Format} & \textbf{Bits} & \textbf{Relative Size} &
+  \textbf{Dynamic Range} & \textbf{Use Case} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Format} & \textbf{Bits} & \textbf{Relative Size} &
+  \textbf{Dynamic Range} & \textbf{Use Case} \\
+  \midrule
+  \endhead
+  FP32 & 32 & 1$\times$ & $1.2\times10^{-38}$ to $3.4\times10^{38}$ & Training reference \\
+  BF16 & 16 & 2$\times$ & Same range as FP32 & Default training/inference \\
+  FP16 & 16 & 2$\times$ & $6\times10^{-5}$ to $65504$ & Common inference \\
+  FP8 (E4M3) & 8 & 4$\times$ & $-448$ to $448$ & H100/Blackwell inference \\
+  INT8 & 8 & 4$\times$ & $-128$ to $127$ & Weight/activation quantization \\
+  INT4/FP4 & 4 & 8$\times$ & $-8$ to $7$ & Aggressive compression \\
+  \bottomrule
+  \caption{Number Formats for AI Inference}
+\end{longtable}
+
+% ─────────────────────────────────────────────────────────────
+\section{Post-Training Quantization Methods}
+\index{PTQ, post-training quantization}
+
+\keyterm{Post-Training Quantization} (PTQ) applies quantization to an already
+trained model, without any additional training.
+
+\subsection{GPTQ: Round-to-Nearest with Correction}
+\index{GPTQ}
+
+GPTQ (Frantar et al., 2022) is a popular INT4 quantization method that:
+\begin{enumerate}
+  \item Quantizes weights layer by layer, in order
+  \item After quantizing each weight, adjusts remaining weights to compensate
+        for the error introduced
+  \item Uses a small calibration dataset to guide quantization
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption={Loading a GPTQ quantized model}]
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from optimum.gptq import GPTQQuantizer
+
+# Load a pre-quantized GPTQ model (4-bit)
+# Models are available on HuggingFace Hub with "-GPTQ" suffix
+model = AutoModelForCausalLM.from_pretrained(
+    "TheBloke/Llama-2-70B-GPTQ",  # Pre-quantized 4-bit model
+    device_map="auto",            # Auto-distribute across GPUs
+    torch_dtype="auto",
+)
+# This 70B model now fits in ~35GB instead of ~140GB
+\end{lstlisting}
+
+\subsection{AWQ: Activation-Aware Weight Quantization}
+\index{AWQ}
+
+AWQ (Lin et al., 2023) is a smarter quantization technique that observes which
+weights are most \textbf{important} for accuracy (by analyzing activations) and
+protects them from quantization error.
+
+Key insight: \textit{not all weights are equally important}.  About 1\% of
+weights are ``salient'' --- they have large activations and dominate the model's
+behavior.  AWQ keeps these weights at higher precision while aggressively
+quantizing the rest.
+
+\begin{lstlisting}[language=Python, caption={Using vLLM with AWQ quantized model}]
+from vllm import LLM, SamplingParams
+
+# Load AWQ 4-bit quantized model
+llm = LLM(
+    model="casperhansen/llama-3-70b-instruct-awq",
+    quantization="awq",           # Tell vLLM this is an AWQ model
+    tensor_parallel_size=2,       # Still need 2 GPUs for 4-bit 70B
+    gpu_memory_utilization=0.92,
+)
+
+output = llm.generate(
+    ["Explain transformer attention in one sentence."],
+    SamplingParams(temperature=0.7, max_tokens=100)
+)
+print(output[0].outputs[0].text)
+\end{lstlisting}
+
+\subsection{FP8 Quantization on H100/Blackwell}
+\index{FP8}
+
+The H100 introduced native FP8 hardware support through its Transformer Engine.
+FP8 requires minimal post-processing compared to INT quantization because it
+maintains a floating-point representation, preserving the dynamic range needed
+by neural network activations.
+
+\begin{lstlisting}[language=Python, caption={FP8 inference with vLLM}]
+from vllm import LLM
+
+# Enable FP8 quantization (requires H100/Blackwell or newer)
+llm = LLM(
+    model="meta-llama/Llama-3-70b-instruct",
+    quantization="fp8",           # Use FP8 for both weights and activations
+    gpu_memory_utilization=0.90,
+    tensor_parallel_size=1,       # 70B FP8 fits on single H100!
+)
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Quantization Accuracy Tradeoffs}
+
+\begin{center}
+\begin{tabular}{lrrrr}
+  \toprule
+  \textbf{Method} & \textbf{Bits} & \textbf{Memory} & \textbf{Speed} &
+  \textbf{Accuracy Loss} \\
+  \midrule
+  BF16 (baseline) & 16 & 140 GB & 1.0$\times$ & 0\% \\
+  FP8 & 8 & 70 GB & 1.9$\times$ & $<$0.1\% \\
+  INT8 (SmoothQuant) & 8 & 70 GB & 1.7$\times$ & $<$0.5\% \\
+  INT4 (AWQ) & 4 & 35 GB & 2.5$\times$ & 1--3\% \\
+  INT4 (GPTQ) & 4 & 35 GB & 2.3$\times$ & 1--5\% \\
+  FP4 (Blackwell) & 4 & 35 GB & 4.0$\times$ & $<$1\% \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent All numbers are approximate for Llama-3 70B on H100.  Accuracy loss
+measured as perplexity increase on common benchmarks.
+
+\tipbox{Which Quantization to Choose?}{
+\begin{itemize}
+  \item \textbf{H100/Blackwell, maximum speed:} FP8 (native hardware support,
+        minimal accuracy loss)
+  \item \textbf{Memory constrained, quality matters:} AWQ INT4 (best accuracy
+        at 4-bit)
+  \item \textbf{Maximum compression:} GPTQ INT4 with group size 32
+  \item \textbf{Edge/CPU deployment:} GGUF with llama.cpp (Q4\_K\_M is excellent)
+\end{itemize}
+}
+
+\begin{chapsummary}
+Quantization reduces model weight precision to save memory and increase speed.
+Lower precision (FP8, INT4) means smaller models, higher throughput, but some
+accuracy loss.  GPTQ and AWQ are leading 4-bit post-training quantization methods.
+FP8 is now natively supported on H100 and Blackwell GPUs with negligible accuracy
+loss.  On Blackwell, FP4 delivers 4$\times$ the throughput of H100 FP8.  Always
+benchmark accuracy on your specific task before deploying a quantized model.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Speculative Decoding}
+\label{ch:speculative}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand why speculative decoding speeds up inference
+  \item Learn the draft-verify paradigm
+  \item Understand acceptance rates and when speculation helps
+  \item Apply speculative decoding with vLLM and TensorRT-LLM
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Bottleneck: Sequential Decode Steps}
+
+Recall that decode generates one token at a time.  Each step requires a full
+forward pass through the model.  Even if you have a very fast GPU, you cannot
+parallelize these steps: token $n+1$ cannot be generated until token $n$ is known.
+
+\analogybox{The Draft and Reviewer}{
+Imagine a document that must be approved by an expert (the large model).
+The expert is slow but always right.
+
+You hire a fast intern (the small model) to write a draft.  The intern quickly
+suggests the next 5 words.  Then the expert reviews all 5 words in a single pass
+--- accepting most of them, and correcting any mistakes.
+
+Result: the expert does one review instead of five.  If the intern is correct
+4 out of 5 times, the overall speed roughly doubles.
+
+This is \textit{speculative decoding}.
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{How Speculative Decoding Works}
+
+\index{speculative decoding}
+Speculative decoding\index{speculative decoding} uses two models:
+
+\begin{itemize}
+  \item \textbf{Draft model:} A small, fast model that quickly generates $k$
+        candidate tokens.
+  \item \textbf{Target model:} The large, accurate model that verifies all $k$
+        tokens in \textbf{one parallel forward pass}.
+\end{itemize}
+
+The key insight is that the target model can verify $k$ tokens in parallel
+(similar to prefill) rather than generating them sequentially.  If the draft is
+mostly correct, we get multiple output tokens per target model forward pass.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9, node distance=0.4cm]
+  \tikzstyle{sbox}=[rectangle, draw=AccentOrange, fill=AccentOrange!15,
+                    rounded corners=3pt, minimum height=0.7cm,
+                    font=\small, inner sep=4pt]
+  \tikzstyle{lbox}=[rectangle, draw=NavyBlue, fill=NavyBlue!15,
+                    rounded corners=3pt, minimum height=0.7cm,
+                    font=\small, inner sep=4pt]
+
+  % Step 1: Draft
+  \node[sbox] (d1) {Draft model};
+  \node[sbox, right=of d1] (t1) {``The''};
+  \node[sbox, right=of t1] (t2) {``sky''};
+  \node[sbox, right=of t2] (t3) {``is''};
+  \node[sbox, right=of t3] (t4) {``blue''};
+  \node[sbox, right=of t4] (t5) {``today''};
+  \node[font=\small\bfseries, above=0.1cm of d1] {Step 1: Draft 5 tokens};
+
+  \foreach \a/\b in {d1/t1, t1/t2, t2/t3, t3/t4, t4/t5}
+    \draw[-{Stealth}] (\a) -- (\b);
+
+  % Step 2: Verify
+  \node[lbox, below=1.2cm of d1] (lm) {Target model (parallel verify)};
+  \draw[-{Stealth}] (lm.east) -- ++(5,0)
+    node[midway, above, font=\small] {verify all 5 tokens at once};
+
+  % Tick/cross
+  \foreach \x/\res/\col in {
+    3.2/\checkmark/AccentGreen, 4.6/\checkmark/AccentGreen,
+    6.0/\checkmark/AccentGreen, 7.4/\checkmark/AccentGreen,
+    8.8/$\times$/red}
+  {
+    \node[font=\large\bfseries, text=\col] at (\x, -1.8) {\res};
+  }
+  \node[font=\small\bfseries, below=3cm of d1]
+    {4 tokens accepted, 1 rejected (acceptance rate = 80\%)};
+\end{tikzpicture}
+\end{center}
+
+\subsection{N-gram and EAGLE Speculation}
+
+Beyond a separate small model, modern systems use:
+
+\begin{itemize}
+  \item \textbf{N-gram speculation:} Predict next tokens based on n-gram statistics
+        from the current context.  Fast and requires no extra model.
+  \item \textbf{EAGLE/EAGLE-3:} Uses a shallow draft head that shares the target
+        model's hidden states.  Achieves 3$\times$ speedup on typical text.
+  \item \textbf{Medusa:} Multiple parallel draft heads on the same model backbone.
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Speculative decoding with vLLM}]
+from vllm import LLM, SamplingParams
+
+# Method 1: Use a small draft model
+llm = LLM(
+    model="meta-llama/Llama-3-70b-instruct",        # Target model
+    speculative_model="meta-llama/Llama-3-8b-instruct",  # Draft model
+    num_speculative_tokens=5,   # Generate 5 draft tokens per step
+    tensor_parallel_size=2,
+)
+
+# Method 2: N-gram based speculation (no extra model needed)
+llm_ngram = LLM(
+    model="meta-llama/Llama-3-70b-instruct",
+    speculative_model="[ngram]",     # Built-in n-gram drafter
+    ngram_prompt_lookup_max=4,       # Look back 4 tokens for patterns
+    num_speculative_tokens=5,
+    tensor_parallel_size=2,
+)
+
+result = llm.generate(
+    ["Write a Python function to sort a list:"],
+    SamplingParams(temperature=0.0, max_tokens=200)  # Greedy is ideal for speculation
+)
+\end{lstlisting}
+
+\notebox{When Speculation Helps Most}{
+Speculative decoding helps most when:
+\begin{itemize}
+  \item Output is predictable (code, structured text, repetitive responses)
+  \item Batch size is small (low utilization otherwise)
+  \item Latency matters more than throughput
+\end{itemize}
+Speculative decoding \textit{hurts} throughput at high batch sizes because it adds
+verification overhead.  At a batch size of 32+, continuous batching is usually
+better than speculation.
+}
+
+\begin{chapsummary}
+Speculative decoding uses a fast draft model to propose multiple tokens, which the
+target model verifies in parallel.  When the draft is mostly correct, this delivers
+2--4$\times$ lower latency for single-request serving.  EAGLE-3 and n-gram
+speculation are the preferred methods in 2025.  Speculation is most beneficial for
+low-batch, latency-sensitive use cases, not high-throughput batch serving.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Inference Runtimes: vLLM, TensorRT-LLM, and SGLang}
+\label{ch:runtimes}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand the architecture of the three leading inference runtimes
+  \item Compare vLLM, TensorRT-LLM, and SGLang across key dimensions
+  \item Know which runtime to choose for a given use case
+  \item Deploy a model with vLLM and a REST API
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Inference Runtime Stack}
+
+An \keyterm{inference runtime}\index{inference runtime} is the software layer that
+takes a trained model and serves it efficiently to users.  Think of it as the
+kitchen of a restaurant: the model is the recipe, and the runtime is the kitchen
+with all its equipment, scheduling, and organization.
+
+Every production runtime must handle:
+\begin{itemize}
+  \item \textbf{Model loading:} Reading weights from disk, placing on GPUs
+  \item \textbf{Request queuing:} Accepting HTTP/gRPC requests from users
+  \item \textbf{Batching:} Grouping multiple requests together for efficiency
+  \item \textbf{Scheduling:} Deciding which requests to process next
+  \item \textbf{Memory management:} Allocating/freeing KV cache for each request
+  \item \textbf{Output:} Streaming tokens back to users as they are generated
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────
+\section{vLLM: The Production Standard}
+\index{vLLM}
+
+\keyterm{vLLM} (UC Berkeley, 2023, now a PyTorch Foundation project) is the
+most widely adopted open-source inference engine.  Its core innovations:
+
+\begin{itemize}
+  \item \textbf{PagedAttention:} Eliminates KV cache fragmentation (Chapter~\ref{ch:kvcache})
+  \item \textbf{Continuous batching:} New requests join as soon as a slot frees up
+  \item \textbf{Prefix caching:} Reuses KV state for shared prefixes
+  \item \textbf{OpenAI-compatible API:} Drop-in replacement for OpenAI API
+\end{itemize}
+
+Typical performance: 120--160 requests/second, 50--80ms TTFT with 100 concurrent
+users for Llama-class models on H100.
+
+\subsection{Continuous Batching}
+\index{continuous batching}
+
+Traditional batching waits for a batch to be full before starting.  This is like
+a bus that only departs when every seat is full --- efficient for the bus, but
+terrible for passengers who arrived early.
+
+\keyterm{Continuous batching} (also called iteration-level scheduling) allows
+new requests to join the batch at every decode step.  When request A finishes at
+step 50, a new request immediately fills that slot.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+  % Static batching (bad)
+  \node[font=\small\bfseries\color{NavyBlue}] at (3,6.5) {Static Batching};
+  \draw[fill=NavyBlue!10, draw=NavyBlue, rounded corners=3pt]
+    (0,5.5) rectangle (6,6.3);
+  \node[font=\tiny] at (3,5.9) {Req A (20 steps), Req B (20 steps), Req C (20 steps)};
+  \draw[fill=AccentOrange!20, draw=AccentOrange, rounded corners=3pt]
+    (0,4.5) rectangle (6,5.3);
+  \node[font=\tiny\color{AccentOrange}] at (3,4.9) {WAIT for next batch...};
+  \draw[fill=NavyBlue!10, draw=NavyBlue, rounded corners=3pt]
+    (0,3.5) rectangle (6,4.3);
+  \node[font=\tiny] at (3,3.9) {Req D, E, F (waiting all this time!)};
+
+  % Arrow
+  \draw[-{Stealth}] (7,5) -- (8,5);
+
+  % Continuous batching (good)
+  \node[font=\small\bfseries\color{AccentGreen}] at (12,6.5)
+    {Continuous Batching};
+  \foreach \y/\col/\lbl in {
+    5.8/NavyBlue/Req A (finishes early),
+    4.9/NavyBlue/Req B,
+    4.0/NavyBlue/Req C,
+    3.1/AccentGreen/Req D joins immediately!}
+  {
+    \draw[fill=\col!20, draw=\col, rounded corners=2pt]
+      (8.5,\y-0.35) rectangle (15.5,\y+0.35);
+    \node[font=\tiny] at (12,\y) {\lbl};
+  }
+\end{tikzpicture}
+\end{center}
+
+\subsection{Running vLLM}
+
+\begin{lstlisting}[style=bashstyle, caption={Starting the vLLM OpenAI-compatible server}]
+# Install vLLM
+pip install vllm
+
+# Start the server (OpenAI-compatible API on port 8000)
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-3-70b-instruct \
+    --tensor-parallel-size 2 \          # Use 2 GPUs
+    --gpu-memory-utilization 0.90 \     # Use 90% of GPU memory for KV cache
+    --enable-prefix-caching \           # Enable prefix caching
+    --kv-cache-dtype fp8 \              # FP8 KV cache
+    --max-num-seqs 256 \                # Max concurrent sequences
+    --port 8000
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Querying the vLLM server}]
+import openai
+
+# vLLM is OpenAI API compatible
+client = openai.OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="not-needed"                # vLLM doesn't require a key
+)
+
+response = client.chat.completions.create(
+    model="meta-llama/Llama-3-70b-instruct",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain KV cache in 2 sentences."}
+    ],
+    max_tokens=200,
+    stream=True                         # Enable streaming
+)
+
+for chunk in response:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{TensorRT-LLM: Maximum NVIDIA Performance}
+\index{TensorRT-LLM}
+
+\keyterm{TensorRT-LLM} (NVIDIA) compiles a model into a highly optimized engine
+specifically for a particular GPU, precision, and sequence configuration.
+
+Key advantages:
+\begin{itemize}
+  \item Lowest latency at low concurrency (35--50ms TTFT vs.\ vLLM's 50--80ms)
+  \item Deep GPU kernel fusion (multiple operations merged into one kernel)
+  \item FP8/FP4 native support for Blackwell
+  \item Disaggregated serving via NVIDIA Dynamo
+\end{itemize}
+
+Key disadvantages:
+\begin{itemize}
+  \item Complex engine compilation (can take hours per model)
+  \item NVIDIA-only (no AMD, Intel)
+  \item Requires re-compilation when model or GPU changes
+\end{itemize}
+
+\begin{lstlisting}[style=bashstyle, caption={Building and running a TensorRT-LLM engine}]
+# Install TensorRT-LLM
+pip install tensorrt_llm
+
+# Step 1: Convert model to TensorRT-LLM checkpoint format
+python convert_checkpoint.py \
+    --model_dir ./llama-3-70b \
+    --output_dir ./trt-checkpoint \
+    --dtype float16
+
+# Step 2: Build the TRT engine (this compiles for your specific GPU)
+trtllm-build \
+    --checkpoint_dir ./trt-checkpoint \
+    --output_dir ./trt-engine \
+    --max_input_len 2048 \
+    --max_output_len 512 \
+    --max_batch_size 32 \
+    --tp_size 2                  # Tensor parallel across 2 GPUs
+
+# Step 3: Run inference
+python run.py \
+    --engine_dir ./trt-engine \
+    --max_output_len 100 \
+    --input_text "Explain GPU memory hierarchy:"
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{SGLang: Structured Generation Language}
+\index{SGLang}
+
+\keyterm{SGLang} (Zheng et al., 2024) introduces \textit{RadixAttention} --- an
+automatic KV cache reuse system that builds a radix tree of all cached prefixes
+and shares them optimally across requests.
+
+SGLang excels for:
+\begin{itemize}
+  \item Long-document processing (PDF analysis, RAG)
+  \item Conversation-style traffic with long shared history
+  \item Multi-turn agents that reuse the same system context
+  \item Structured generation (JSON output, grammars)
+\end{itemize}
+
+\begin{lstlisting}[style=bashstyle, caption={Starting SGLang server}]
+pip install sglang
+
+# Launch SGLang server
+python -m sglang.launch_server \
+    --model-path meta-llama/Llama-3-70b-instruct \
+    --tp 2 \                     # Tensor parallel size
+    --mem-fraction-static 0.82 \
+    --enable-flashinfer          # Use FlashInfer attention backend
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Runtime Comparison: The Decision Guide}
+
+\begin{longtable}{@{}p{3cm}p{3cm}p{3cm}p{3cm}@{}}
+  \toprule
+  \textbf{Criterion} & \textbf{vLLM} & \textbf{TRT-LLM} & \textbf{SGLang} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Criterion} & \textbf{vLLM} & \textbf{TRT-LLM} & \textbf{SGLang} \\
+  \midrule
+  \endhead
+  Setup time & Minutes & Hours/days & Minutes \\
+  TTFT (low concurrency) & 50--80ms & 35--50ms & 50--80ms \\
+  Throughput (high concurrency) & Excellent & Excellent & Excellent \\
+  Hardware & Any (NVIDIA/AMD) & NVIDIA only & NVIDIA/AMD \\
+  Prefix caching & Good & Good & Excellent (RadixAttention) \\
+  Model support & Widest & NVIDIA-curated & Growing \\
+  API compatibility & OpenAI & Custom/Triton & OpenAI \\
+  Best for & General production & Max NVIDIA perf & Long context/RAG \\
+  \bottomrule
+  \caption{Inference Runtime Comparison (2025)}
+\end{longtable}
+
+\begin{chapsummary}
+vLLM is the go-to for most production deployments: easy setup, OpenAI-compatible,
+excellent throughput.  TensorRT-LLM achieves the lowest latency on NVIDIA hardware
+but requires compilation effort.  SGLang leads for long-context workloads with
+RadixAttention.  All three support modern features: FP8, continuous batching,
+prefix caching.  Choose based on your traffic shape, ops maturity, and latency SLAs.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Distributed Inference: Parallelism Strategies}
+\label{ch:distributed}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand why a single GPU is often not enough
+  \item Learn tensor parallelism, pipeline parallelism, and sequence parallelism
+  \item Understand NVLink and its role in multi-GPU scaling
+  \item Apply tensor parallelism with vLLM
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{When One GPU Is Not Enough}
+
+A Llama-3 70B model in FP16 requires 140 GB of memory --- far more than a single
+H100's 80 GB.  Even smaller models may benefit from multiple GPUs for throughput.
+
+Distributing a model across multiple GPUs requires a \textbf{parallelism strategy}.
+There are three main approaches:
+
+% ─────────────────────────────────────────────────────────────
+\section{Tensor Parallelism}
+\index{tensor parallelism}
+
+\keyterm{Tensor parallelism} (TP) splits individual matrices \textit{across} GPUs.
+
+\analogybox{The Heavy Book}{
+Imagine a very large book that is too heavy for one person to carry.
+Instead of one person carrying the whole book, two people each carry half ---
+one carries pages 1--500, the other carries pages 501--1000.
+
+Tensor parallelism works similarly.  A large weight matrix (say, $8192 \times 8192$)
+is split across 2 GPUs: each GPU stores a $4096 \times 8192$ slice.
+
+Both GPUs compute in parallel, then combine their partial results.  The
+communication (combining results) uses NVLink for very high bandwidth.
+}
+
+With TP-4 (4 GPUs), each GPU holds 1/4 of each weight matrix.  Each forward
+pass requires an \textbf{AllReduce} communication operation to combine results
+across all 4 GPUs.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  % Weight matrix
+  \node[font=\small\bfseries] at (-2,2) {Weight $W$};
+  \draw[fill=NavyBlue!20, draw=NavyBlue] (-3.5,0) rectangle (-0.5,4);
+
+  % Split arrow
+  \draw[-{Stealth}, line width=1.5pt, AccentOrange] (-0.5,2) -- (0.5,2)
+    node[midway,above,font=\tiny] {split};
+
+  % GPU 0
+  \draw[fill=AccentGreen!20, draw=AccentGreen, rounded corners=3pt]
+    (0.7, 2.0) rectangle (3.7, 4.0);
+  \node[font=\small\bfseries\color{AccentGreen}] at (2.2,3.0) {GPU 0: $W[:n/2, :]$};
+
+  % GPU 1
+  \draw[fill=NavyBlue!20, draw=NavyBlue, rounded corners=3pt]
+    (0.7, -0.2) rectangle (3.7, 1.8);
+  \node[font=\small\bfseries\color{NavyBlue}] at (2.2,0.8) {GPU 1: $W[n/2:, :]$};
+
+  % AllReduce
+  \draw[-{Stealth}, AccentOrange, line width=1.5pt] (3.7,3.0) -- (5.0,2.0)
+    node[midway,above right,font=\tiny] {AllReduce};
+  \draw[-{Stealth}, AccentOrange, line width=1.5pt] (3.7,0.8) -- (5.0,2.0);
+  \draw[fill=AccentOrange!20, draw=AccentOrange, rounded corners=3pt]
+    (5.0,1.5) rectangle (7.5,2.5);
+  \node[font=\small] at (6.25,2.0) {Combined};
+\end{tikzpicture}
+\end{center}
+
+\subsection{Launching Tensor-Parallel vLLM}
+
+\begin{lstlisting}[style=bashstyle, caption={Running vLLM with tensor parallelism}]
+# 70B model across 2 H100s with TP=2
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-3-70b-instruct \
+    --tensor-parallel-size 2        # Split across 2 GPUs
+
+# 405B model across 8 H100s with TP=8
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-3-405b-instruct \
+    --tensor-parallel-size 8        # Split across 8 GPUs
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Pipeline Parallelism}
+\index{pipeline parallelism}
+
+\keyterm{Pipeline parallelism} (PP) assigns different model \textit{layers} to
+different GPUs.  Layers 0--19 run on GPU 0, layers 20--39 run on GPU 1, etc.
+
+\analogybox{The Assembly Line}{
+In a car factory, one station installs the engine, another the doors, another the
+paint.  Each station works on a different car simultaneously.
+
+In pipeline parallelism, GPU 0 finishes processing layers 0--19 for batch 1 and
+passes the intermediate activations to GPU 1.  While GPU 1 works on batch 1,
+GPU 0 starts processing batch 2.
+
+The pipeline keeps all GPUs busy, like a factory assembly line.
+}
+
+Pipeline parallelism communicates via a simpler point-to-point activation transfer
+(not AllReduce), making it more efficient across slower interconnects
+(e.g., InfiniBand, PCIe) than tensor parallelism.
+
+% ─────────────────────────────────────────────────────────────
+\section{NVLink: The Fast Lane Between GPUs}
+\index{NVLink}
+
+Communication between GPUs is the bottleneck in distributed inference.  NVLink is
+NVIDIA's high-speed GPU interconnect, far faster than PCIe:
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  \textbf{Interconnect} & \textbf{Bandwidth (each dir.)} & \textbf{Use Case} \\
+  \midrule
+  PCIe 5.0 $\times$16 & 64 GB/s & CPU--GPU \\
+  NVLink 4 (H100) & 900 GB/s & GPU--GPU \\
+  NVLink 5 (B200) & 1800 GB/s & GPU--GPU \\
+  NVSwitch (GB200 NVL72) & 57.6 TB/s total & Rack-scale \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+With NVLink 4 on a DGX H100 system (8 GPUs), the AllReduce bandwidth for
+tensor parallelism is \textbf{28$\times$} faster than a PCIe-only configuration.
+This is why TP works well intra-node but poorly across nodes.
+
+\tipbox{The Parallelism Recipe}{
+\begin{itemize}
+  \item \textbf{TP within a node} (GPUs on same server, NVLink connected)
+  \item \textbf{PP across nodes} (different servers, InfiniBand connected)
+  \item \textbf{TP=8, PP=N/8 for very large models} (405B+)
+\end{itemize}
+}
+
+% ─────────────────────────────────────────────────────────────
+\section{Disaggregated Prefill and Decode}
+\index{disaggregated serving}
+
+An emerging production pattern separates the prefill and decode phases onto
+\textbf{different hardware}:
+
+\begin{itemize}
+  \item \textbf{Prefill GPUs:} Optimized for high compute (processing long prompts)
+  \item \textbf{Decode GPUs:} Optimized for memory bandwidth (fast token generation)
+\end{itemize}
+
+NVIDIA Dynamo (announced GTC 2025) is an orchestration layer that implements this
+pattern on top of vLLM, TensorRT-LLM, or SGLang.  By routing prefill and decode to
+specialized hardware, it can significantly reduce queue depth and improve both TTFT
+and throughput simultaneously.
+
+\begin{chapsummary}
+Large models require multi-GPU deployment.  Tensor parallelism splits weight
+matrices across GPUs --- ideal for intra-node with NVLink.  Pipeline parallelism
+assigns layers to GPUs --- better for inter-node.  NVLink provides the
+high-bandwidth interconnect that makes tensor parallelism practical.  Disaggregated
+prefill/decode is an emerging frontier that dedicates different hardware to the
+two phases of inference.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Observability: Monitoring Inference Systems}
+\label{ch:observability}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand the key metrics to monitor in a production inference system
+  \item Learn to use NVIDIA profiling tools: nvtop, nsys, ncu
+  \item Set up Prometheus and Grafana for inference monitoring
+  \item Diagnose common performance bottlenecks from metrics
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{The Three Pillars of Observability}
+
+A production inference system must be observable:
+
+\begin{itemize}
+  \item \textbf{Metrics:} Numerical measurements over time (latency p99, GPU util\%)
+  \item \textbf{Logs:} Events with timestamps (errors, request traces)
+  \item \textbf{Traces:} Request-level timing breakdown (prefill time, queue time)
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────
+\section{Key Metrics to Monitor}
+
+\begin{longtable}{@{}p{3.5cm}p{4cm}p{5cm}@{}}
+  \toprule
+  \textbf{Metric} & \textbf{What It Measures} & \textbf{Action if Bad} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Metric} & \textbf{What It Measures} & \textbf{Action if Bad} \\
+  \midrule
+  \endhead
+  GPU utilization & \% time GPU is active & $<$60\%: add batching; increase load \\
+  GPU memory \% & VRAM in use & $>$95\%: reduce batch size or add GPUs \\
+  TTFT (p50/p95/p99) & Latency to first token & High: check queue depth, prefill load \\
+  TPOT (p50/p95) & Latency per output token & High: check decode batch size \\
+  Throughput (tok/s) & Tokens generated per second & Low: check GPU util, batching \\
+  Request queue depth & Requests waiting & $>$0 for $>$1s: scale up \\
+  KV cache usage \% & Cache pool utilization & Near 100\%: risk of OOM eviction \\
+  Token generation rate & New tokens/s overall & Declining: memory pressure \\
+  \bottomrule
+  \caption{Production Inference Monitoring Metrics}
+\end{longtable}
+
+% ─────────────────────────────────────────────────────────────
+\section{GPU Profiling Tools}
+\index{GPU profiling}
+
+\subsection{nvtop: Real-Time GPU Monitor}
+
+\begin{lstlisting}[style=bashstyle, caption={Using nvtop for GPU monitoring}]
+# Install nvtop
+apt-get install nvtop
+
+# Run nvtop
+nvtop
+# Shows: GPU util%, memory, power, temperature for all GPUs
+# Press F2 to configure display, q to quit
+\end{lstlisting}
+
+\subsection{Nsight Systems: Timeline Profiling}
+\index{Nsight Systems}
+
+\begin{lstlisting}[style=bashstyle, caption={Profiling with Nsight Systems}]
+# Profile a vLLM inference run
+nsys profile \
+    --trace cuda,nvtx,osrt \
+    --output inference_profile \
+    python inference_benchmark.py
+
+# Open in Nsight Systems GUI
+nsys-ui inference_profile.nsys-rep
+# Shows: kernel timelines, memory transfers, CPU/GPU overlap
+\end{lstlisting}
+
+\subsection{Nsight Compute: Kernel-Level Analysis}
+\index{Nsight Compute}
+
+\begin{lstlisting}[style=bashstyle, caption={Per-kernel profiling with ncu}]
+# Profile specific CUDA kernels (use on small workloads)
+ncu --set full \
+    --kernel-name "flash_fwd_kernel" \
+    --export kernel_profile \
+    python run_attention.py
+
+# Key metrics to look for:
+# - SM active cycles: is GPU compute actually busy?
+# - Memory throughput: are we hitting bandwidth limits?
+# - Warp efficiency: are warps diverging?
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Prometheus and Grafana for Inference}
+\index{Prometheus}\index{Grafana}
+
+vLLM exposes metrics natively at \texttt{/metrics} in Prometheus format:
+
+\begin{lstlisting}[style=bashstyle, caption={Starting vLLM with metrics}]
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-3-70b-instruct \
+    --tensor-parallel-size 2 \
+    --port 8000 \
+    --metrics-enabled          # Enable Prometheus metrics
+# Metrics available at http://localhost:8000/metrics
+\end{lstlisting}
+
+\begin{lstlisting}[style=yamlstyle, caption={Prometheus scrape config for vLLM}]
+# prometheus.yml
+scrape_configs:
+  - job_name: 'vllm'
+    static_configs:
+      - targets: ['localhost:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+# Key vLLM metrics:
+# vllm:num_requests_running        - active requests
+# vllm:gpu_cache_usage_perc        - KV cache % used
+# vllm:e2e_request_latency_seconds - end-to-end latency histogram
+# vllm:generation_tokens_total     - tokens generated
+\end{lstlisting}
+
+\begin{chapsummary}
+Production inference requires continuous monitoring.  Key metrics are GPU
+utilization, KV cache usage, TTFT, TPOT, and throughput.  NVIDIA tools (nvtop,
+nsys, ncu) provide GPU-level insight.  vLLM's Prometheus metrics enable Grafana
+dashboards for operational monitoring.  High queue depth means scale up.  Low GPU
+utilization means increase batch size or adjust scheduling.
+\end{chapsummary}
+
+% ============================================================
+\chapter{Production Deployment with Kubernetes}
+\label{ch:kubernetes}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand how to containerize and deploy inference servers
+  \item Configure GPU resources in Kubernetes
+  \item Implement auto-scaling based on latency metrics
+  \item Set up health checks and rolling updates for zero-downtime deployments
+\end{learningobjectives}
+
+% ─────────────────────────────────────────────────────────────
+\section{Containerizing a vLLM Server}
+
+\begin{lstlisting}[style=bashstyle, caption={Dockerfile for a vLLM inference server}]
+# Dockerfile
+FROM nvcr.io/nvidia/cuda:12.4.0-devel-ubuntu22.04
+
+# Install Python and dependencies
+RUN apt-get update && apt-get install -y python3-pip python3-dev && \
+    pip install vllm==0.7.0 huggingface_hub
+
+# Pre-download the model (or mount as a volume in production)
+RUN python3 -c "from huggingface_hub import snapshot_download; \
+    snapshot_download('meta-llama/Llama-3-8b-instruct')"
+
+# Expose the API port
+EXPOSE 8000
+
+# Start the vLLM server
+CMD ["python3", "-m", "vllm.entrypoints.openai.api_server", \
+     "--model", "meta-llama/Llama-3-8b-instruct", \
+     "--port", "8000", \
+     "--gpu-memory-utilization", "0.90"]
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Kubernetes Deployment}
+
+\begin{lstlisting}[style=yamlstyle, caption={Kubernetes Deployment for vLLM}]
+# vllm-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-llama3-8b
+  labels:
+    app: vllm-inference
+spec:
+  replicas: 2                  # Start with 2 replicas
+  selector:
+    matchLabels:
+      app: vllm-inference
+  template:
+    metadata:
+      labels:
+        app: vllm-inference
+    spec:
+      containers:
+      - name: vllm
+        image: my-registry/vllm-llama3:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            nvidia.com/gpu: "1"      # 1 GPU per pod
+            memory: "40Gi"
+            cpu: "8"
+          requests:
+            nvidia.com/gpu: "1"
+            memory: "32Gi"
+            cpu: "4"
+        env:
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 90
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-service
+spec:
+  selector:
+    app: vllm-inference
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer
+\end{lstlisting}
+
+% ─────────────────────────────────────────────────────────────
+\section{Horizontal Pod Autoscaler}
+
+\begin{lstlisting}[style=yamlstyle, caption={HPA based on custom latency metric}]
+# hpa-vllm.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vllm-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vllm-llama3-8b
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metric:
+        name: vllm_queue_depth    # Scale when queue is growing
+      target:
+        type: AverageValue
+        averageValue: "5"         # Scale up when avg queue > 5 requests
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle, caption={Deploying to Kubernetes}]
+# Apply deployment
+kubectl apply -f vllm-deployment.yaml
+
+# Check pod status
+kubectl get pods -l app=vllm-inference
+
+# Check GPU allocation
+kubectl describe pod vllm-llama3-8b-<pod-id>
+
+# View logs
+kubectl logs -f deployment/vllm-llama3-8b
+
+# Check service
+kubectl get service vllm-service
+\end{lstlisting}
+
+\begin{chapsummary}
+Production inference runs on Kubernetes with GPU-aware pods.  Containerize with
+NVIDIA CUDA base images and expose a health endpoint.  Specify
+\texttt{nvidia.com/gpu} resource limits.  Use HPA with custom metrics (queue
+depth, latency) for autoscaling.  Set readiness probes with long initial delays
+--- model loading takes time.  Use rolling updates for zero-downtime deployments.
+\end{chapsummary}
+
+% ============================================================
+%  PART II: ADVANCED TOPICS
+% ============================================================
+\part{Advanced Topics}
+
+% ============================================================
+\chapter{Long Context, Multimodal, and Agentic Inference}
+\label{ch:advanced}
+% ============================================================
+
+\begin{learningobjectives}
+  \item Understand the unique challenges of long-context inference
+  \item Learn how multimodal models handle images, audio, and video
+  \item Understand agentic inference patterns and their infrastructure needs
+\end{learningobjectives}
+
+\section{Long-Context Inference}
+\index{long context}
+
+Models with 128K--1M token context windows introduce extreme memory and compute
+challenges.  The KV cache for a single 128K-token conversation with Llama-3 70B
+reaches:
+
+\[
+  2 \times 80 \times 64 \times 128 \times 131072 \times 2 \approx \mathbf{344\text{ GB}}
+\]
+
+This dwarfs even the GPU's HBM capacity.  Techniques for long-context efficiency:
+
+\begin{itemize}
+  \item \textbf{Sparse attention:} Only attend to a subset of past tokens
+        (e.g., StreamingLLM's ``attention sinks'')
+  \item \textbf{KV cache quantization to INT2/INT4:} Sub-4-bit KV compression
+  \item \textbf{KV cache offloading:} Spill to CPU memory or NVMe SSD
+  \item \textbf{Chunked prefill:} Process long prompts in chunks to control
+        peak memory
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Chunked prefill for long contexts in vLLM}]
+from vllm import LLM, SamplingParams
+
+llm = LLM(
+    model="meta-llama/Llama-3-70b-instruct",
+    max_model_len=131072,          # 128K context window
+    enable_chunked_prefill=True,   # Process long prompts in chunks
+    max_num_batched_tokens=2048,   # Process 2K tokens per prefill chunk
+    tensor_parallel_size=4,        # Need 4 GPUs for 128K KV cache
+)
+\end{lstlisting}
+
+\section{Multimodal Inference}
+\index{multimodal inference}
+
+Models like LLaVA, Qwen-VL, and InternVL accept image inputs alongside text.
+The inference pipeline has an extra step: image encoding.
+
+\begin{enumerate}
+  \item \textbf{Vision encoder:} A ViT (Vision Transformer) encodes the image
+        into feature tokens --- typically 256--1024 tokens per image.
+  \item \textbf{Projection:} A linear layer maps image features to the LLM's
+        token space.
+  \item \textbf{LLM decode:} The LLM generates text given the image tokens
+        and text prompt.
+\end{enumerate}
+
+The bottleneck is that each image adds many tokens to the effective sequence
+length, inflating KV cache requirements significantly.
+
+\section{Agentic Inference}
+\index{agentic inference}
+
+AI agents run multiple LLM calls in a loop: plan, act, observe, repeat.
+The infrastructure implications:
+
+\begin{itemize}
+  \item \textbf{Long conversations:} Context accumulates over many steps.
+        Efficient prefix caching is essential.
+  \item \textbf{Tool calling:} The model generates structured JSON for tool calls.
+        Low latency per step matters for responsiveness.
+  \item \textbf{Parallel function calls:} Some frameworks call multiple tools
+        simultaneously.  The serving infrastructure must handle bursty traffic.
+  \item \textbf{Request tracing:} Agents make many sub-requests.  Tracing is
+        essential for debugging and cost attribution.
+\end{itemize}
+
+\begin{chapsummary}
+Long-context inference strains KV cache memory and requires chunked prefill,
+sparse attention, or quantized KV.  Multimodal models add a vision encoder step
+that contributes many extra tokens.  Agentic workloads create bursty, highly
+correlated requests that benefit from aggressive prefix caching and low per-call
+latency.
+\end{chapsummary}
+
+% ============================================================
+%  APPENDICES
+% ============================================================
+\appendix
+
+% ============================================================
+\chapter{CUDA Cheat Sheet}
+\label{app:cuda}
+% ============================================================
+
+\section*{Essential CUDA API}
+
+\begin{lstlisting}[style=cstyle, caption={CUDA Cheat Sheet}]
+/* ── Memory ─────────────────────────────────────────────── */
+cudaMalloc(&ptr, bytes);             // Allocate GPU memory
+cudaFree(ptr);                       // Free GPU memory
+cudaMemcpy(dst, src, bytes, kind);   // Transfer: kind =
+  // cudaMemcpyHostToDevice | cudaMemcpyDeviceToHost | DeviceToDevice
+cudaMemset(ptr, value, bytes);       // Fill GPU memory
+
+/* ── Async memory (for overlap with compute) ───────────── */
+cudaMallocAsync(&ptr, bytes, stream);
+cudaFreeAsync(ptr, stream);
+cudaMemcpyAsync(dst, src, bytes, kind, stream);
+
+/* ── Kernel launch ─────────────────────────────────────── */
+kernel<<<grid, block, shared_mem, stream>>>(args...);
+// grid  = dim3(gridX, gridY, gridZ)
+// block = dim3(blockX, blockY, blockZ)
+// max threads per block: 1024
+
+/* ── Thread indexing inside kernel ────────────────────── */
+int idx = blockIdx.x * blockDim.x + threadIdx.x;
+int idy = blockIdx.y * blockDim.y + threadIdx.y;
+
+/* ── Synchronization ───────────────────────────────────── */
+cudaDeviceSynchronize();             // Wait for ALL GPU work
+cudaStreamSynchronize(stream);       // Wait for one stream
+__syncthreads();                     // Sync threads within block (in kernel)
+
+/* ── Error checking (always do this!) ─────────────────── */
+#define CUDA_CHECK(call) { \
+    cudaError_t err = call; \
+    if (err != cudaSuccess) { \
+        fprintf(stderr, "CUDA error: %s at %s:%d\n", \
+                cudaGetErrorString(err), __FILE__, __LINE__); \
+        exit(1); \
+    } \
+}
+CUDA_CHECK(cudaMalloc(&ptr, bytes));
+
+/* ── Streams ─────────────────────────────────────────── */
+cudaStream_t stream;
+cudaStreamCreate(&stream);
+cudaStreamDestroy(stream);
+
+/* ── Device query ─────────────────────────────────────── */
+cudaDeviceProp prop;
+cudaGetDeviceProperties(&prop, device_id);
+// prop.name, prop.totalGlobalMem, prop.multiProcessorCount
+// prop.maxThreadsPerBlock, prop.sharedMemPerBlock
+\end{lstlisting}
+
+\section*{Performance Rules of Thumb}
+
+\begin{itemize}
+  \item Use at least 128 threads per block; 256 is usually optimal
+  \item Ensure memory accesses are coalesced (stride-1 access by consecutive threads)
+  \item Avoid warp divergence in performance-critical paths
+  \item Use shared memory for data reused $>$2 times within a block
+  \item Overlap compute and memory transfers using CUDA streams
+  \item Profile with nsys before optimizing --- never guess the bottleneck
+\end{itemize}
+
+% ============================================================
+\chapter{Linux Commands for AI Engineers}
+\label{app:linux}
+% ============================================================
+
+\begin{lstlisting}[style=bashstyle, caption={Essential Linux commands for AI engineers}]
+# ── GPU monitoring ──────────────────────────────────────────
+nvidia-smi                          # GPU status (util, mem, temp)
+nvidia-smi dmon -s u                # Live utilization every 1s
+nvidia-smi --query-gpu=name,memory.total,memory.free \
+    --format=csv                    # GPU memory info
+watch -n 1 nvidia-smi              # Auto-refresh every 1s
+nvtop                               # Interactive GPU monitor
+
+# ── Process management ──────────────────────────────────────
+htop                                # Interactive process viewer
+ps aux | grep python               # Find Python processes
+kill -9 <pid>                       # Force kill process
+nohup python server.py &           # Run in background
+
+# ── Disk and memory ─────────────────────────────────────────
+df -h                               # Disk space
+du -sh /models/*                   # Model directory sizes
+free -h                             # RAM usage
+cat /proc/meminfo | grep HugePages # Huge pages (for pinned memory)
+
+# ── Network ─────────────────────────────────────────────────
+ss -tlnp | grep 8000               # Check if port 8000 is open
+curl http://localhost:8000/health   # Test health endpoint
+curl http://localhost:8000/v1/models # List loaded models
+
+# ── Benchmarking ────────────────────────────────────────────
+# Time a command
+time python inference_benchmark.py
+
+# Test vLLM throughput
+python -m vllm.entrypoints.benchmark_throughput \
+    --model meta-llama/Llama-3-8b-instruct \
+    --input-len 512 --output-len 128 \
+    --num-prompts 1000
+
+# ── Environment ─────────────────────────────────────────────
+echo $CUDA_VISIBLE_DEVICES         # Which GPUs are visible?
+export CUDA_VISIBLE_DEVICES=0,1    # Restrict to GPU 0 and 1
+env | grep CUDA                    # All CUDA env variables
+
+# ── Docker/Container ────────────────────────────────────────
+docker run --gpus all \            # Use all GPUs in container
+    -p 8000:8000 \
+    my-vllm-image
+
+# ── Tmux for long-running jobs ──────────────────────────────
+tmux new -s inference              # New session named "inference"
+tmux attach -t inference           # Reattach to session
+# Ctrl+b, d to detach (session keeps running)
+\end{lstlisting}
+
+% ============================================================
+\chapter{Benchmarking Toolkit}
+\label{app:benchmark}
+% ============================================================
+
+\begin{lstlisting}[language=Python, caption={Comprehensive inference benchmarking script}]
+"""
+AI Inference Benchmarking Toolkit
+Measures: TTFT, TPOT, throughput, memory usage
+"""
+import time
+import asyncio
+import aiohttp
+import statistics
+import json
+from dataclasses import dataclass, field
+from typing import List
+
+@dataclass
+class BenchmarkResult:
+    ttft_ms: List[float] = field(default_factory=list)
+    tpot_ms: List[float] = field(default_factory=list)
+    total_tokens: List[int] = field(default_factory=list)
+    errors: int = 0
+
+    def summary(self):
+        return {
+            "TTFT_p50_ms":  statistics.median(self.ttft_ms),
+            "TTFT_p95_ms":  statistics.quantiles(self.ttft_ms, n=20)[18],
+            "TTFT_p99_ms":  statistics.quantiles(self.ttft_ms, n=100)[98],
+            "TPOT_p50_ms":  statistics.median(self.tpot_ms),
+            "TPOT_p95_ms":  statistics.quantiles(self.tpot_ms, n=20)[18],
+            "throughput_tok_s": sum(self.total_tokens) /
+                               (max(self.ttft_ms) / 1000 +
+                                sum(self.tpot_ms)/1000),
+            "errors": self.errors,
+        }
+
+async def benchmark_request(
+    session: aiohttp.ClientSession,
+    url: str,
+    prompt: str,
+    max_tokens: int,
+    result: BenchmarkResult
+):
+    payload = {
+        "model": "your-model",
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": max_tokens,
+        "stream": True
+    }
+    start = time.perf_counter()
+    first_token_time = None
+    token_count = 0
+
+    try:
+        async with session.post(f"{url}/v1/chat/completions",
+                                json=payload) as resp:
+            async for line in resp.content:
+                line = line.decode().strip()
+                if line.startswith("data: ") and line != "data: [DONE]":
+                    chunk = json.loads(line[6:])
+                    delta = chunk["choices"][0]["delta"]
+                    if delta.get("content"):
+                        if first_token_time is None:
+                            first_token_time = time.perf_counter()
+                            result.ttft_ms.append(
+                                (first_token_time - start) * 1000)
+                        token_count += 1
+
+        if token_count > 1:
+            elapsed = time.perf_counter() - first_token_time
+            result.tpot_ms.append(elapsed * 1000 / (token_count - 1))
+        result.total_tokens.append(token_count)
+    except Exception as e:
+        result.errors += 1
+        print(f"Error: {e}")
+
+async def run_benchmark(
+    url: str = "http://localhost:8000",
+    concurrent_users: int = 10,
+    num_requests: int = 100,
+    prompt: str = "Write a 200-word essay about GPU architecture.",
+    max_tokens: int = 300
+):
+    result = BenchmarkResult()
+    connector = aiohttp.TCPConnector(limit=concurrent_users * 2)
+
+    async with aiohttp.ClientSession(connector=connector) as session:
+        tasks = [
+            benchmark_request(session, url, prompt, max_tokens, result)
+            for _ in range(num_requests)
+        ]
+        # Run with limited concurrency
+        semaphore = asyncio.Semaphore(concurrent_users)
+        async def bounded_task(t):
+            async with semaphore:
+                await t
+        await asyncio.gather(*[bounded_task(t) for t in tasks])
+
+    print("\n=== Benchmark Results ===")
+    for k, v in result.summary().items():
+        print(f"  {k:25s}: {v:.2f}" if isinstance(v, float) else
+              f"  {k:25s}: {v}")
+
+if __name__ == "__main__":
+    asyncio.run(run_benchmark(
+        url="http://localhost:8000",
+        concurrent_users=20,
+        num_requests=200,
+    ))
+\end{lstlisting}
+
+% ============================================================
+\chapter{GPU Profiling Tools}
+\label{app:profiling}
+% ============================================================
+
+\section*{Profiling Workflow}
+
+\begin{lstlisting}[style=bashstyle, caption={Full GPU profiling workflow}]
+# ── Step 1: Quick health check ───────────────────────────────
+nvidia-smi
+# Look for: GPU util%, memory used, temperature, power draw
+
+# ── Step 2: Find the bottleneck with nsys ────────────────────
+nsys profile \
+    --trace=cuda,nvtx,osrt,cudnn,cublas \
+    --sample=cpu \
+    --output=my_profile \
+    python my_inference.py
+
+# Open GUI
+nsys-ui my_profile.nsys-rep
+# KEY QUESTIONS:
+# - Are there gaps between kernels? (CPU-bound, batching issue)
+# - Is cudaMemcpy dominating? (unnecessary H2D/D2H transfers)
+# - Are kernels short? (need to increase batch size)
+
+# ── Step 3: Deep kernel analysis with ncu ────────────────────
+# WARNING: ncu is slow. Use on small workloads only.
+ncu --set full \
+    --kernel-name "cutlass" \    # Target specific kernel
+    --launch-skip 10 \           # Skip first 10 launches (warmup)
+    --launch-count 3 \           # Profile 3 launches
+    -o kernel_analysis \
+    python run_matmul.py
+
+ncu-ui kernel_analysis.ncu-rep
+# KEY METRICS:
+# - Memory Throughput: are we hitting bandwidth ceiling?
+# - SM Active Cycles %: is compute busy?
+# - L2 Hit Rate: are we reusing data?
+# - Warp Stall Reasons: what's blocking warps?
+
+# ── Step 4: MFU (Model FLOP Utilization) ────────────────────
+# MFU = actual FLOP/s / peak FLOP/s
+# H100 peak FP16: 989 TFLOP/s
+# Good MFU for inference: >30% (memory-bound, expected to be low)
+# Good MFU for large batches: >50%
+
+# ── Step 5: Memory analysis ──────────────────────────────────
+# Check for memory fragmentation
+curl http://localhost:8000/metrics | grep cache
+# vllm:gpu_cache_usage_perc  -> should be <90%
+# vllm:gpu_cache_hit_rate    -> higher is better (prefix caching)
+\end{lstlisting}
+
+\section*{Interpreting Common Profiling Issues}
+
+\begin{longtable}{@{}p{4cm}p{4cm}p{5cm}@{}}
+  \toprule
+  \textbf{Symptom} & \textbf{Likely Cause} & \textbf{Fix} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Symptom} & \textbf{Likely Cause} & \textbf{Fix} \\
+  \midrule
+  \endhead
+  GPU util $<$ 30\% & Batch too small & Increase max\_num\_seqs \\
+  Memory $>$ 95\% & KV cache overflow & Reduce seq length or add GPUs \\
+  TTFT spikes & Large prefill batches & Enable chunked prefill \\
+  TPOT high & Memory bandwidth bound & Normal for small batches; use quantization \\
+  Frequent OOM & Memory fragmentation & Use PagedAttention (vLLM) \\
+  Slow decode after long prefill & KV cache eviction & Increase GPU memory fraction \\
+  \bottomrule
+  \caption{Common Profiling Issues and Fixes}
+\end{longtable}
+
+% ============================================================
+\chapter{Research Papers Every Inference Engineer Should Read}
+\label{app:papers}
+% ============================================================
+
+\section*{Foundational Papers}
+
+\begin{description}
+  \item[Attention Is All You Need (Vaswani et al., 2017)]
+    The original Transformer paper.  Understand this before anything else.
+    \url{https://arxiv.org/abs/1706.03762}
+
+  \item[FlashAttention (Dao et al., 2022)]
+    IO-aware exact attention that became standard in all production systems.
+    \url{https://arxiv.org/abs/2205.14135}
+
+  \item[FlashAttention-2 (Dao, 2023)]
+    Further optimizations: 2$\times$ speedup, better parallelism.
+    \url{https://arxiv.org/abs/2307.08691}
+
+  \item[Efficient Memory Management for LLM Serving with PagedAttention
+    (Kwon et al., SOSP 2023)]
+    Foundation of vLLM.  Must-read for KV cache management.
+    \url{https://arxiv.org/abs/2309.06180}
+\end{description}
+
+\section*{Quantization}
+
+\begin{description}
+  \item[LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale
+    (Dettmers et al., 2022)]
+    First practical INT8 quantization for LLMs.
+    \url{https://arxiv.org/abs/2208.07339}
+
+  \item[GPTQ: Accurate Post-Training Quantization for Generative Pre-trained
+    Transformers (Frantar et al., 2022)]
+    State-of-the-art INT4 PTQ.
+    \url{https://arxiv.org/abs/2210.17323}
+
+  \item[AWQ: Activation-aware Weight Quantization (Lin et al., 2023)]
+    Better accuracy than GPTQ at same bit width.
+    \url{https://arxiv.org/abs/2306.00978}
+
+  \item[SmoothQuant (Xiao et al., 2022)]
+    Smooth activation outliers for INT8 quantization.
+    \url{https://arxiv.org/abs/2211.10438}
+\end{description}
+
+\section*{Speculative Decoding}
+
+\begin{description}
+  \item[Accelerating Large Language Model Decoding with Speculative Sampling
+    (Chen et al., 2023)]
+    Original speculative decoding paper.
+    \url{https://arxiv.org/abs/2302.01318}
+
+  \item[EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty
+    (Li et al., 2024)]
+    3$\times$ speedup with draft head sharing target model features.
+    \url{https://arxiv.org/abs/2401.15077}
+\end{description}
+
+\section*{Parallelism and Distributed Inference}
+
+\begin{description}
+  \item[Megatron-LM (Shoeybi et al., 2019)]
+    Efficient tensor and pipeline parallelism for large models.
+    \url{https://arxiv.org/abs/1909.08053}
+
+  \item[Alpa: Automating Inter- and Intra-Operator Parallelism (Zheng et al., 2022)]
+    Automatic parallelism for large models.
+    \url{https://arxiv.org/abs/2201.12023}
+\end{description}
+
+\section*{Systems and Scheduling}
+
+\begin{description}
+  \item[Orca: A Distributed Serving System for Transformer-Based Generative
+    Models (Yu et al., OSDI 2022)]
+    First continuous batching paper for LLM serving.
+    \url{https://www.usenix.org/conference/osdi22/presentation/yu}
+
+  \item[SGLang: Efficient Execution of Structured Language Model Programs
+    (Zheng et al., 2024)]
+    RadixAttention for prefix sharing.
+    \url{https://arxiv.org/abs/2312.07104}
+
+  \item[DejaVu: Contextual Sparsity for Efficient LLMs at Inference Time
+    (Liu et al., 2023)]
+    Dynamic sparsity for faster inference.
+    \url{https://arxiv.org/abs/2310.17157}
+\end{description}
+
+\section*{2025 Frontier Papers}
+
+\begin{description}
+  \item[TokenWeave: Reducing Tensor-Parallel Communication Overhead
+    (arXiv 2505.11329, 2025)]
+    1.2$\times$ latency improvement in tensor-parallel low-latency inference.
+
+  \item[QuantSpec: Self-Speculative Decoding with Hierarchical Quantized KV
+    Cache (arXiv 2502.10424, 2025)]
+    1.78$\times$ throughput via combined speculative decoding and KV quantization.
+
+  \item[GPU-Accelerated INT8 Quantization for KV Cache Compression
+    (arXiv 2601.04719, 2026)]
+    4$\times$ memory reduction with CUDA kernels achieving 1694$\times$ CPU speedup.
+\end{description}
+
+% ─── Index ───────────────────────────────────────────────────
+\printindex
+
+\end{document}
